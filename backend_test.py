@@ -215,26 +215,28 @@ class BackendTester:
             return False
     
     def test_get_admin_settings(self):
-        """Test getting admin settings"""
+        """Test getting enhanced admin settings with all payment providers"""
         try:
             response = self.session.get(f"{API_BASE_URL}/admin/settings")
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ['mtn_base_url', 'updated_at']
+                required_fields = ['mtn_base_url', 'updated_at', 'apple_pay_merchant_id', 
+                                 'google_pay_merchant_id', 'supabase_url', 'supabase_anon_key']
                 if all(field in data for field in required_fields):
-                    self.log_result('admin_settings', 'get_settings', True, 
-                                  "Admin settings retrieved successfully", data)
+                    self.log_result('admin_settings', 'get_enhanced_settings', True, 
+                                  "Enhanced admin settings retrieved with all payment providers", data)
                     return True
                 else:
-                    self.log_result('admin_settings', 'get_settings', False, 
-                                  "Admin settings missing required fields")
+                    missing_fields = [field for field in required_fields if field not in data]
+                    self.log_result('admin_settings', 'get_enhanced_settings', False, 
+                                  f"Admin settings missing enhanced fields: {missing_fields}")
                     return False
             else:
-                self.log_result('admin_settings', 'get_settings', False, 
+                self.log_result('admin_settings', 'get_enhanced_settings', False, 
                               f"Get admin settings failed with status {response.status_code}")
                 return False
         except Exception as e:
-            self.log_result('admin_settings', 'get_settings', False, f"Get admin settings error: {str(e)}")
+            self.log_result('admin_settings', 'get_enhanced_settings', False, f"Get admin settings error: {str(e)}")
             return False
     
     def test_update_admin_settings(self):
