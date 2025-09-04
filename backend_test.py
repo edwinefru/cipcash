@@ -402,6 +402,166 @@ class BackendTester:
             self.log_result('data_validation', 'user_transactions', False, f"User transactions error: {str(e)}")
             return False
     
+    def test_profile_picture_upload(self):
+        """Test profile picture upload endpoint"""
+        if not self.auth_token:
+            self.log_result('kyc_system', 'profile_picture_upload', False, "No auth token for profile picture test")
+            return False
+        
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        
+        # Create a simple test image (1x1 pixel PNG)
+        import base64
+        test_image_data = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==')
+        
+        files = {'file': ('test.png', test_image_data, 'image/png')}
+        
+        try:
+            response = self.session.post(f"{API_BASE_URL}/auth/upload-profile-picture", 
+                                       headers=headers, files=files)
+            if response.status_code == 200:
+                data = response.json()
+                if 'profile_picture_url' in data and data['profile_picture_url'].startswith('data:image'):
+                    self.log_result('kyc_system', 'profile_picture_upload', True, 
+                                  "Profile picture uploaded successfully", data)
+                    return True
+                else:
+                    self.log_result('kyc_system', 'profile_picture_upload', False, 
+                                  "Profile picture upload response invalid")
+                    return False
+            else:
+                self.log_result('kyc_system', 'profile_picture_upload', False, 
+                              f"Profile picture upload failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('kyc_system', 'profile_picture_upload', False, f"Profile picture upload error: {str(e)}")
+            return False
+    
+    def test_transfer_reasons(self):
+        """Test transfer reasons endpoint"""
+        try:
+            response = self.session.get(f"{API_BASE_URL}/transfer-reasons")
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list) and len(data) >= 10:
+                    # Check for expected transfer reasons
+                    reason_codes = [reason.get('code') for reason in data]
+                    expected_codes = ['family_support', 'education', 'medical', 'business', 'investment']
+                    
+                    if all(code in reason_codes for code in expected_codes):
+                        self.log_result('compliance', 'transfer_reasons', True, 
+                                      f"All {len(data)} transfer reasons loaded successfully", data)
+                        return True
+                    else:
+                        missing = [code for code in expected_codes if code not in reason_codes]
+                        self.log_result('compliance', 'transfer_reasons', False, 
+                                      f"Missing expected transfer reasons: {missing}")
+                        return False
+                else:
+                    self.log_result('compliance', 'transfer_reasons', False, 
+                                  f"Expected 10+ transfer reasons, got {len(data) if isinstance(data, list) else 0}")
+                    return False
+            else:
+                self.log_result('compliance', 'transfer_reasons', False, 
+                              f"Get transfer reasons failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('compliance', 'transfer_reasons', False, f"Transfer reasons error: {str(e)}")
+            return False
+    
+    def test_payment_methods(self):
+        """Test payment methods CRUD operations"""
+        if not self.auth_token:
+            self.log_result('payment_methods', 'crud_operations', False, "No auth token for payment methods test")
+            return False
+        
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        
+        try:
+            # Test GET payment methods
+            response = self.session.get(f"{API_BASE_URL}/payment-methods", headers=headers)
+            if response.status_code != 200:
+                self.log_result('payment_methods', 'crud_operations', False, 
+                              f"Get payment methods failed with status {response.status_code}")
+                return False
+            
+            # Test POST payment method
+            payment_method = {
+                "method_type": "credit_card",
+                "last_four": "1234",
+                "card_brand": "visa",
+                "expiry_month": 12,
+                "expiry_year": 2025,
+                "is_default": True
+            }
+            
+            response = self.session.post(f"{API_BASE_URL}/payment-methods", 
+                                       json=payment_method, headers=headers)
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get('last_four') == '1234' and 
+                    data.get('card_brand') == 'visa' and
+                    data.get('method_type') == 'credit_card'):
+                    self.log_result('payment_methods', 'crud_operations', True, 
+                                  "Payment method CRUD operations working correctly", data)
+                    return True
+                else:
+                    self.log_result('payment_methods', 'crud_operations', False, 
+                                  "Payment method data not persisted correctly")
+                    return False
+            else:
+                self.log_result('payment_methods', 'crud_operations', False, 
+                              f"Add payment method failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('payment_methods', 'crud_operations', False, f"Payment methods error: {str(e)}")
+            return False
+    
+    def test_enhanced_exchange_rates(self):
+        """Test enhanced exchange rates for all supported currencies"""
+        enhanced_currency_pairs = [
+            ('USD', 'XOF'),  # West African CFA franc
+            ('USD', 'XAF'),  # Central African CFA franc
+            ('USD', 'CDF'),  # Congolese franc
+            ('USD', 'ETB'),  # Ethiopian birr
+            ('USD', 'GNF'),  # Guinean franc
+            ('USD', 'LRD'),  # Liberian dollar
+            ('USD', 'MGA'),  # Malagasy ariary
+            ('USD', 'MWK'),  # Malawian kwacha
+            ('USD', 'MZN'),  # Mozambican metical
+            ('USD', 'RWF'),  # Rwandan franc
+            ('USD', 'SLE'),  # Sierra Leonean leone
+            ('USD', 'TZS'),  # Tanzanian shilling
+            ('USD', 'UGX'),  # Ugandan shilling
+            ('USD', 'ZMW'),  # Zambian kwacha
+        ]
+        
+        all_passed = True
+        successful_rates = 0
+        
+        for from_curr, to_curr in enhanced_currency_pairs:
+            try:
+                response = self.session.get(f"{API_BASE_URL}/exchange-rates/{from_curr}/{to_curr}")
+                if response.status_code == 200:
+                    data = response.json()
+                    if 'rate' in data and isinstance(data['rate'], (int, float)) and data['rate'] > 0:
+                        successful_rates += 1
+                    else:
+                        all_passed = False
+                else:
+                    all_passed = False
+            except Exception:
+                all_passed = False
+        
+        if successful_rates >= 10:  # At least 10 enhanced currency pairs working
+            self.log_result('exchange_rates', 'enhanced_currencies', True, 
+                          f"Enhanced exchange rates working for {successful_rates}/{len(enhanced_currency_pairs)} currency pairs")
+            return True
+        else:
+            self.log_result('exchange_rates', 'enhanced_currencies', False, 
+                          f"Only {successful_rates}/{len(enhanced_currency_pairs)} enhanced currency pairs working")
+            return False
+    
     def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting Mobile Money Remittance Backend API Tests")
