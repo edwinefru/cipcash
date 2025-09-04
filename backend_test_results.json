@@ -1,0 +1,253 @@
+{
+  "authentication": {
+    "user_registration": {
+      "success": true,
+      "message": "User registered successfully with valid token",
+      "timestamp": "2025-09-04T21:52:01.411579",
+      "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGJhMGEwMThlMjM3ZDUwZDA0ODU3NDAiLCJleHAiOjE3NTcxMDkxMjF9.Z2CR-jYc73cYCTfH06dbh2HmsZihr05URepPmgZQxyE",
+        "token_type": "bearer"
+      }
+    },
+    "user_login": {
+      "success": true,
+      "message": "User login successful with valid token",
+      "timestamp": "2025-09-04T21:52:01.654924",
+      "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGJhMGEwMThlMjM3ZDUwZDA0ODU3NDAiLCJleHAiOjE3NTcxMDkxMjF9.Z2CR-jYc73cYCTfH06dbh2HmsZihr05URepPmgZQxyE",
+        "token_type": "bearer"
+      }
+    },
+    "invalid_login": {
+      "success": true,
+      "message": "Invalid login correctly rejected with 401",
+      "timestamp": "2025-09-04T21:52:01.903607",
+      "data": null
+    },
+    "jwt_validation": {
+      "success": true,
+      "message": "JWT token validation successful",
+      "timestamp": "2025-09-04T21:52:01.916527",
+      "data": {
+        "id": "68ba0a018e237d50d0485740",
+        "email": "john.doe@example.com",
+        "phone": "+1234567890",
+        "first_name": "John",
+        "last_name": "Doe",
+        "country": "US",
+        "is_active": true,
+        "created_at": "2025-09-04T21:52:01.913140"
+      }
+    },
+    "protected_without_token": {
+      "success": true,
+      "message": "Protected endpoint correctly rejected request without token",
+      "timestamp": "2025-09-04T21:52:01.928193",
+      "data": null
+    }
+  },
+  "admin_settings": {
+    "get_settings": {
+      "success": true,
+      "message": "Admin settings retrieved successfully",
+      "timestamp": "2025-09-04T21:52:01.979573",
+      "data": {
+        "id": "68ba092f90bfc6b7a85b5bab",
+        "mtn_api_key": null,
+        "mtn_api_secret": null,
+        "mtn_subscription_key": null,
+        "mtn_base_url": "https://sandbox.momodeveloper.mtn.com",
+        "stripe_api_key": null,
+        "stripe_webhook_secret": null,
+        "paypal_client_id": null,
+        "paypal_client_secret": null,
+        "google_pay_merchant_id": null,
+        "supabase_url": null,
+        "supabase_anon_key": null,
+        "currency_api_key": null,
+        "updated_at": "2025-09-04T21:48:31.142000"
+      }
+    },
+    "update_settings": {
+      "success": true,
+      "message": "Admin settings updated successfully",
+      "timestamp": "2025-09-04T21:52:01.991599",
+      "data": {
+        "id": "68ba092f90bfc6b7a85b5bab",
+        "mtn_api_key": "test_mtn_api_key_12345",
+        "mtn_api_secret": "test_mtn_secret_67890",
+        "mtn_subscription_key": "test_subscription_key_abcde",
+        "mtn_base_url": "https://sandbox.momodeveloper.mtn.com",
+        "stripe_api_key": "sk_test_stripe_key_12345",
+        "stripe_webhook_secret": null,
+        "paypal_client_id": null,
+        "paypal_client_secret": null,
+        "google_pay_merchant_id": null,
+        "supabase_url": null,
+        "supabase_anon_key": null,
+        "currency_api_key": null,
+        "updated_at": "2025-09-04T21:52:01.986000"
+      }
+    }
+  },
+  "countries": {
+    "get_supported_countries": {
+      "success": true,
+      "message": "All expected countries found: ['CM', 'NG', 'GH', 'ZA', 'KE']",
+      "timestamp": "2025-09-04T21:52:02.006194",
+      "data": [
+        {
+          "id": "68ba092f90bfc6b7a85b5ba1",
+          "country_code": "CM",
+          "country_name": "Cameroon",
+          "currency_code": "XAF",
+          "currency_name": "Central African CFA franc",
+          "is_active": true,
+          "mtn_supported": true
+        },
+        {
+          "id": "68ba092f90bfc6b7a85b5ba3",
+          "country_code": "NG",
+          "country_name": "Nigeria",
+          "currency_code": "NGN",
+          "currency_name": "Nigerian naira",
+          "is_active": true,
+          "mtn_supported": true
+        },
+        {
+          "id": "68ba092f90bfc6b7a85b5ba5",
+          "country_code": "GH",
+          "country_name": "Ghana",
+          "currency_code": "GHS",
+          "currency_name": "Ghanaian cedi",
+          "is_active": true,
+          "mtn_supported": true
+        },
+        {
+          "id": "68ba092f90bfc6b7a85b5ba7",
+          "country_code": "ZA",
+          "country_name": "South Africa",
+          "currency_code": "ZAR",
+          "currency_name": "South African rand",
+          "is_active": true,
+          "mtn_supported": true
+        },
+        {
+          "id": "68ba092f90bfc6b7a85b5ba9",
+          "country_code": "KE",
+          "country_name": "Kenya",
+          "currency_code": "KES",
+          "currency_name": "Kenyan shilling",
+          "is_active": true,
+          "mtn_supported": true
+        }
+      ]
+    }
+  },
+  "exchange_rates": {
+    "USD_to_XAF": {
+      "success": true,
+      "message": "Exchange rate USD/XAF: 580.0",
+      "timestamp": "2025-09-04T21:52:02.036412",
+      "data": {
+        "rate": 580.0,
+        "updated_at": "2025-09-04T21:52:02.012433"
+      }
+    },
+    "USD_to_NGN": {
+      "success": true,
+      "message": "Exchange rate USD/NGN: 460.0",
+      "timestamp": "2025-09-04T21:52:02.047223",
+      "data": {
+        "rate": 460.0,
+        "updated_at": "2025-09-04T21:52:02.043002"
+      }
+    },
+    "USD_to_GHS": {
+      "success": true,
+      "message": "Exchange rate USD/GHS: 12.0",
+      "timestamp": "2025-09-04T21:52:02.059912",
+      "data": {
+        "rate": 12.0,
+        "updated_at": "2025-09-04T21:52:02.055947"
+      }
+    },
+    "USD_to_ZAR": {
+      "success": true,
+      "message": "Exchange rate USD/ZAR: 18.5",
+      "timestamp": "2025-09-04T21:52:02.070995",
+      "data": {
+        "rate": 18.5,
+        "updated_at": "2025-09-04T21:52:02.067050"
+      }
+    },
+    "USD_to_KES": {
+      "success": true,
+      "message": "Exchange rate USD/KES: 130.0",
+      "timestamp": "2025-09-04T21:52:02.080704",
+      "data": {
+        "rate": 130.0,
+        "updated_at": "2025-09-04T21:52:02.076784"
+      }
+    },
+    "get_all_rates": {
+      "success": true,
+      "message": "Retrieved 5 exchange rates",
+      "timestamp": "2025-09-04T21:52:02.089633",
+      "data": [
+        {
+          "from_currency": "USD",
+          "to_currency": "XAF",
+          "rate": 580.0,
+          "updated_at": "2025-09-04T21:52:02.012000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "NGN",
+          "rate": 460.0,
+          "updated_at": "2025-09-04T21:52:02.043000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "GHS",
+          "rate": 12.0,
+          "updated_at": "2025-09-04T21:52:02.055000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "ZAR",
+          "rate": 18.5,
+          "updated_at": "2025-09-04T21:52:02.067000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "KES",
+          "rate": 130.0,
+          "updated_at": "2025-09-04T21:52:02.076000"
+        }
+      ]
+    }
+  },
+  "data_validation": {
+    "health_check": {
+      "success": true,
+      "message": "API is healthy - Status: healthy",
+      "timestamp": "2025-09-04T21:52:01.128032",
+      "data": {
+        "status": "healthy",
+        "timestamp": "2025-09-04T21:52:01.124280"
+      }
+    },
+    "user_transactions": {
+      "success": true,
+      "message": "User transactions retrieved successfully (0 transactions)",
+      "timestamp": "2025-09-04T21:52:02.140646",
+      "data": []
+    }
+  },
+  "summary": {
+    "passed": 16,
+    "failed": 0,
+    "errors": []
+  }
+}
