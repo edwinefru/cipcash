@@ -566,42 +566,55 @@ class BackendTester:
             return False
     
     def run_all_tests(self):
-        """Run all backend tests"""
-        print("🚀 Starting Mobile Money Remittance Backend API Tests")
-        print("=" * 60)
+        """Run all enhanced v2.0 backend tests"""
+        print("🚀 Starting Mobile Money Remittance Backend API v2.0 Enhanced Tests")
+        print("=" * 70)
         
         # Test basic connectivity first
         if not self.test_health_check():
             print("❌ Health check failed - API may not be running")
             return self.test_results
         
-        # Authentication tests
-        print("\n🔐 Testing Authentication System...")
+        # Enhanced Authentication & KYC System tests
+        print("\n🔐 Testing Enhanced Authentication & KYC System...")
         self.test_user_registration()
         self.test_user_login()
         self.test_invalid_login()
         self.test_jwt_token_validation()
         self.test_protected_endpoint_without_token()
+        self.test_profile_picture_upload()
         
-        # Admin settings tests
-        print("\n⚙️ Testing Admin Settings Management...")
+        # Enhanced Admin Settings tests
+        print("\n⚙️ Testing Enhanced Admin Settings (All Payment Providers)...")
         self.test_get_admin_settings()
         self.test_update_admin_settings()
         
-        # Countries and exchange rates tests
-        print("\n🌍 Testing Countries and Exchange Rates...")
+        # Enhanced Countries Support tests (24 MTN MoMo countries)
+        print("\n🌍 Testing Enhanced Country Support (24 MTN MoMo Countries)...")
         self.test_get_supported_countries()
+        
+        # Enhanced Exchange Rates tests
+        print("\n💱 Testing Enhanced Exchange Rates (All Currencies)...")
         self.test_exchange_rates()
         self.test_get_all_exchange_rates()
+        self.test_enhanced_exchange_rates()
+        
+        # Transfer Reasons & Compliance tests
+        print("\n📋 Testing Transfer Reasons & Compliance...")
+        self.test_transfer_reasons()
+        
+        # Payment Methods tests
+        print("\n💳 Testing Payment Methods CRUD...")
+        self.test_payment_methods()
         
         # Data validation tests
-        print("\n📊 Testing Data Structure Validation...")
+        print("\n📊 Testing Enhanced Data Structure Validation...")
         self.test_user_transactions()
         
         # Print summary
-        print("\n" + "=" * 60)
-        print("📋 TEST SUMMARY")
-        print("=" * 60)
+        print("\n" + "=" * 70)
+        print("📋 ENHANCED v2.0 TEST SUMMARY")
+        print("=" * 70)
         print(f"✅ Passed: {self.test_results['summary']['passed']}")
         print(f"❌ Failed: {self.test_results['summary']['failed']}")
         
@@ -609,6 +622,8 @@ class BackendTester:
             print("\n🚨 FAILED TESTS:")
             for error in self.test_results['summary']['errors']:
                 print(f"   • {error}")
+        else:
+            print("\n🎉 All enhanced v2.0 features are working correctly!")
         
         return self.test_results
 
