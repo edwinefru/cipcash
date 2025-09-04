@@ -317,6 +317,17 @@ async def get_all_transactions():
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
 
+# Admin dashboard route
+@app.get("/admin")
+async def admin_dashboard():
+    from fastapi.responses import FileResponse
+    return FileResponse(ROOT_DIR / "static" / "admin.html")
+
+@app.get("/admin/")
+async def admin_dashboard_slash():
+    from fastapi.responses import FileResponse
+    return FileResponse(ROOT_DIR / "static" / "admin.html")
+
 # Include the router in the main app
 app.include_router(api_router)
 
