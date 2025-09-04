@@ -47,7 +47,7 @@ class UserKYC(BaseModel):
     last_name: str
     date_of_birth: date
     nationality: str
-    gender: str = Field(..., regex="^(male|female|other)$")
+    gender: str = Field(..., pattern="^(male|female|other)$")
     
     # Contact Information
     email: str
