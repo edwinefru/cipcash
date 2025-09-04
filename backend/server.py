@@ -171,7 +171,7 @@ class SupportedCountry(BaseModel):
 class PaymentMethod(BaseModel):
     id: str = Field(default_factory=lambda: str(ObjectId()))
     user_id: str
-    method_type: str = Field(..., regex="^(credit_card|debit_card|apple_pay|google_pay|paypal)$")
+    method_type: str = Field(..., pattern="^(credit_card|debit_card|apple_pay|google_pay|paypal)$")
     last_four: Optional[str] = None
     card_brand: Optional[str] = None
     expiry_month: Optional[int] = None
