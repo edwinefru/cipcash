@@ -69,13 +69,32 @@ class BackendTester:
             return False
     
     def test_user_registration(self):
-        """Test user registration with valid data"""
+        """Test user registration with enhanced KYC data structure"""
         test_user = {
-            "email": "john.doe@example.com",
-            "phone": "+1234567890",
-            "first_name": "John",
-            "last_name": "Doe", 
-            "country": "US",
+            "kyc_data": {
+                "first_name": "John",
+                "middle_name": "Michael",
+                "last_name": "Doe",
+                "date_of_birth": "1990-05-15",
+                "nationality": "US",
+                "gender": "male",
+                "email": "john.doe@example.com",
+                "phone": "+1234567890",
+                "address_line1": "123 Main Street",
+                "address_line2": "Apt 4B",
+                "city": "New York",
+                "state_province": "NY",
+                "postal_code": "10001",
+                "country": "US",
+                "id_type": "passport",
+                "id_number": "P123456789",
+                "id_expiry_date": "2030-12-31",
+                "id_issuing_country": "US",
+                "occupation": "Software Engineer",
+                "employer_name": "Tech Corp Inc",
+                "annual_income_range": "100k_250k",
+                "source_of_funds": "salary"
+            },
             "password": "SecurePass123!"
         }
         
