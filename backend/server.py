@@ -60,7 +60,7 @@ class UserKYC(BaseModel):
     country: str
     
     # Identification
-    id_type: str = Field(..., regex="^(passport|national_id|drivers_license|other)$")
+    id_type: str = Field(..., pattern="^(passport|national_id|drivers_license|other)$")
     id_number: str
     id_expiry_date: Optional[date] = None
     id_issuing_country: str
@@ -68,8 +68,8 @@ class UserKYC(BaseModel):
     # Employment/Source of Income
     occupation: str
     employer_name: Optional[str] = None
-    annual_income_range: str = Field(..., regex="^(under_25k|25k_50k|50k_100k|100k_250k|250k_500k|over_500k)$")
-    source_of_funds: str = Field(..., regex="^(salary|business|investment|inheritance|gift|other)$")
+    annual_income_range: str = Field(..., pattern="^(under_25k|25k_50k|50k_100k|100k_250k|250k_500k|over_500k)$")
+    source_of_funds: str = Field(..., pattern="^(salary|business|investment|inheritance|gift|other)$")
     
     # Profile Picture
     profile_picture: Optional[str] = None  # base64 encoded image
