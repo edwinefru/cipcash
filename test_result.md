@@ -317,7 +317,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "All backend API endpoints tested and validated"
+    - "All enhanced v2.0 backend API endpoints tested and validated"
+    - "Enhanced KYC system with profile picture upload verified"
+    - "All 24 MTN MoMo countries with enhanced data confirmed"
+    - "Payment methods CRUD operations validated"
+    - "Enhanced admin settings with all payment providers tested"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
