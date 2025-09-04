@@ -2,32 +2,67 @@
   "authentication": {
     "user_registration": {
       "success": false,
-      "message": "Registration failed with status 500: Internal Server Error",
-      "timestamp": "2025-09-04T22:23:25.791216",
+      "message": "Registration failed with status 400: {\"detail\":\"Email already registered\"}",
+      "timestamp": "2025-09-04T22:26:00.514227",
       "data": null
     },
     "user_login": {
-      "success": false,
-      "message": "Login failed with status 401: {\"detail\":\"Invalid credentials\"}",
-      "timestamp": "2025-09-04T22:23:25.808405",
-      "data": null
+      "success": true,
+      "message": "User login successful with valid token",
+      "timestamp": "2025-09-04T22:26:00.802954",
+      "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGJhMTFjNjQ5Zjk0MDE5MDA0ODJmZjgiLCJleHAiOjE3NTcxMTExNjB9.vwGtfAzVZq9I3z0TzOaLp4zwy-H0L3enfvsjPWorxi8",
+        "token_type": "bearer"
+      }
     },
     "invalid_login": {
       "success": true,
       "message": "Invalid login correctly rejected with 401",
-      "timestamp": "2025-09-04T22:23:25.861650",
+      "timestamp": "2025-09-04T22:26:01.045836",
       "data": null
     },
     "jwt_validation": {
-      "success": false,
-      "message": "No auth token available for testing",
-      "timestamp": "2025-09-04T22:23:25.861699",
-      "data": null
+      "success": true,
+      "message": "JWT token validation successful with KYC data",
+      "timestamp": "2025-09-04T22:26:01.063216",
+      "data": {
+        "id": "68ba11c649f9401900482ff8",
+        "kyc_data": {
+          "first_name": "John",
+          "middle_name": null,
+          "last_name": "Doe",
+          "date_of_birth": "1990-05-15",
+          "nationality": "US",
+          "gender": "male",
+          "email": "john.doe@example.com",
+          "phone": "+1234567890",
+          "address_line1": "123 Main Street",
+          "address_line2": null,
+          "city": "New York",
+          "state_province": "NY",
+          "postal_code": "10001",
+          "country": "US",
+          "id_type": "passport",
+          "id_number": "P123456789",
+          "id_expiry_date": null,
+          "id_issuing_country": "US",
+          "occupation": "Software Engineer",
+          "employer_name": null,
+          "annual_income_range": "100k_250k",
+          "source_of_funds": "salary",
+          "profile_picture": null
+        },
+        "is_kyc_verified": false,
+        "kyc_verification_date": null,
+        "is_active": true,
+        "created_at": "2025-09-04T22:26:01.058648",
+        "updated_at": "2025-09-04T22:26:01.058651"
+      }
     },
     "protected_without_token": {
       "success": true,
       "message": "Protected endpoint correctly rejected request without token",
-      "timestamp": "2025-09-04T22:23:25.876574",
+      "timestamp": "2025-09-04T22:26:01.114290",
       "data": null
     }
   },
@@ -35,29 +70,7 @@
     "get_enhanced_settings": {
       "success": true,
       "message": "Enhanced admin settings retrieved with all payment providers",
-      "timestamp": "2025-09-04T22:23:25.929581",
-      "data": {
-        "id": "68ba092f90bfc6b7a85b5bab",
-        "mtn_api_key": "test_mtn_api_key_12345",
-        "mtn_api_secret": "test_mtn_secret_67890",
-        "mtn_subscription_key": "test_subscription_key_abcde",
-        "mtn_base_url": "https://sandbox.momodeveloper.mtn.com",
-        "stripe_api_key": "sk_test_stripe_key_12345",
-        "stripe_webhook_secret": null,
-        "paypal_client_id": null,
-        "paypal_client_secret": null,
-        "google_pay_merchant_id": null,
-        "apple_pay_merchant_id": null,
-        "supabase_url": null,
-        "supabase_anon_key": null,
-        "currency_api_key": null,
-        "updated_at": "2025-09-04T21:52:01.986000"
-      }
-    },
-    "update_enhanced_settings": {
-      "success": true,
-      "message": "Enhanced admin settings updated successfully with all payment providers",
-      "timestamp": "2025-09-04T22:23:25.945167",
+      "timestamp": "2025-09-04T22:26:01.182408",
       "data": {
         "id": "68ba092f90bfc6b7a85b5bab",
         "mtn_api_key": "test_mtn_api_key_12345",
@@ -75,21 +88,56 @@
         "currency_api_key": null,
         "updated_at": "2025-09-04T22:23:25.938000"
       }
+    },
+    "update_enhanced_settings": {
+      "success": true,
+      "message": "Enhanced admin settings updated successfully with all payment providers",
+      "timestamp": "2025-09-04T22:26:01.235462",
+      "data": {
+        "id": "68ba092f90bfc6b7a85b5bab",
+        "mtn_api_key": "test_mtn_api_key_12345",
+        "mtn_api_secret": "test_mtn_secret_67890",
+        "mtn_subscription_key": "test_subscription_key_abcde",
+        "mtn_base_url": "https://sandbox.momodeveloper.mtn.com",
+        "stripe_api_key": "sk_test_stripe_key_12345",
+        "stripe_webhook_secret": null,
+        "paypal_client_id": null,
+        "paypal_client_secret": null,
+        "google_pay_merchant_id": "google_pay_merchant_12345",
+        "apple_pay_merchant_id": "merchant.com.example.remittance",
+        "supabase_url": "https://test.supabase.co",
+        "supabase_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test",
+        "currency_api_key": null,
+        "updated_at": "2025-09-04T22:26:01.189000"
+      }
     }
   },
   "countries": {
     "get_all_mtn_countries": {
-      "success": false,
-      "message": "Get countries failed with status 500",
-      "timestamp": "2025-09-04T22:23:25.966071",
-      "data": null
+      "success": true,
+      "message": "All 24 MTN MoMo countries loaded with enhanced data (flags, phone codes)",
+      "timestamp": "2025-09-04T22:26:01.249672",
+      "data": {
+        "total_countries": 24,
+        "sample": {
+          "id": "68ba117dd17f18fc3b547777",
+          "country_code": "BJ",
+          "country_name": "Benin",
+          "currency_code": "XOF",
+          "currency_name": "West African CFA franc",
+          "is_active": true,
+          "mtn_supported": true,
+          "flag_emoji": "\ud83c\udde7\ud83c\uddef",
+          "phone_code": "+229"
+        }
+      }
     }
   },
   "exchange_rates": {
     "USD_to_XAF": {
       "success": true,
       "message": "Exchange rate USD/XAF: 580.0",
-      "timestamp": "2025-09-04T22:23:26.023191",
+      "timestamp": "2025-09-04T22:26:01.301748",
       "data": {
         "rate": 580.0,
         "updated_at": "2025-09-04T21:52:02.012000"
@@ -98,7 +146,7 @@
     "USD_to_NGN": {
       "success": true,
       "message": "Exchange rate USD/NGN: 460.0",
-      "timestamp": "2025-09-04T22:23:26.035289",
+      "timestamp": "2025-09-04T22:26:01.312374",
       "data": {
         "rate": 460.0,
         "updated_at": "2025-09-04T21:52:02.043000"
@@ -107,7 +155,7 @@
     "USD_to_GHS": {
       "success": true,
       "message": "Exchange rate USD/GHS: 12.0",
-      "timestamp": "2025-09-04T22:23:26.087552",
+      "timestamp": "2025-09-04T22:26:01.363388",
       "data": {
         "rate": 12.0,
         "updated_at": "2025-09-04T21:52:02.055000"
@@ -116,7 +164,7 @@
     "USD_to_ZAR": {
       "success": true,
       "message": "Exchange rate USD/ZAR: 18.5",
-      "timestamp": "2025-09-04T22:23:26.140539",
+      "timestamp": "2025-09-04T22:26:01.375489",
       "data": {
         "rate": 18.5,
         "updated_at": "2025-09-04T21:52:02.067000"
@@ -125,7 +173,7 @@
     "USD_to_KES": {
       "success": true,
       "message": "Exchange rate USD/KES: 130.0",
-      "timestamp": "2025-09-04T22:23:26.153546",
+      "timestamp": "2025-09-04T22:26:01.427250",
       "data": {
         "rate": 130.0,
         "updated_at": "2025-09-04T21:52:02.076000"
@@ -133,8 +181,8 @@
     },
     "get_all_rates": {
       "success": true,
-      "message": "Retrieved 5 exchange rates",
-      "timestamp": "2025-09-04T22:23:26.165749",
+      "message": "Retrieved 18 exchange rates",
+      "timestamp": "2025-09-04T22:26:01.438651",
       "data": [
         {
           "from_currency": "USD",
@@ -165,13 +213,91 @@
           "to_currency": "KES",
           "rate": 130.0,
           "updated_at": "2025-09-04T21:52:02.076000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "XOF",
+          "rate": 580.0,
+          "updated_at": "2025-09-04T22:23:26.173000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "CDF",
+          "rate": 2000.0,
+          "updated_at": "2025-09-04T22:23:26.234000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "ETB",
+          "rate": 55.0,
+          "updated_at": "2025-09-04T22:23:26.248000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "GNF",
+          "rate": 8500.0,
+          "updated_at": "2025-09-04T22:23:26.301000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "LRD",
+          "rate": 150.0,
+          "updated_at": "2025-09-04T22:23:26.313000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "MGA",
+          "rate": 4500.0,
+          "updated_at": "2025-09-04T22:23:26.325000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "MWK",
+          "rate": 1100.0,
+          "updated_at": "2025-09-04T22:23:26.379000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "MZN",
+          "rate": 64.0,
+          "updated_at": "2025-09-04T22:23:26.432000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "RWF",
+          "rate": 1100.0,
+          "updated_at": "2025-09-04T22:23:26.443000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "SLE",
+          "rate": 22.0,
+          "updated_at": "2025-09-04T22:23:26.456000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "TZS",
+          "rate": 2300.0,
+          "updated_at": "2025-09-04T22:23:26.508000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "UGX",
+          "rate": 3700.0,
+          "updated_at": "2025-09-04T22:23:26.519000"
+        },
+        {
+          "from_currency": "USD",
+          "to_currency": "ZMW",
+          "rate": 25.0,
+          "updated_at": "2025-09-04T22:23:26.571000"
         }
       ]
     },
     "enhanced_currencies": {
       "success": true,
       "message": "Enhanced exchange rates working for 14/14 currency pairs",
-      "timestamp": "2025-09-04T22:23:26.576660",
+      "timestamp": "2025-09-04T22:26:01.877456",
       "data": null
     }
   },
@@ -179,32 +305,34 @@
     "health_check": {
       "success": true,
       "message": "API is healthy - Status: healthy",
-      "timestamp": "2025-09-04T22:23:25.509689",
+      "timestamp": "2025-09-04T22:26:00.499927",
       "data": {
         "status": "healthy",
-        "timestamp": "2025-09-04T22:23:25.505518"
+        "timestamp": "2025-09-04T22:26:00.495605"
       }
     },
     "user_transactions": {
-      "success": false,
-      "message": "No auth token for transaction test",
-      "timestamp": "2025-09-04T22:23:26.629742",
-      "data": null
+      "success": true,
+      "message": "User transactions retrieved successfully (0 transactions)",
+      "timestamp": "2025-09-04T22:26:02.045469",
+      "data": []
     }
   },
   "kyc_system": {
     "profile_picture_upload": {
-      "success": false,
-      "message": "No auth token for profile picture test",
-      "timestamp": "2025-09-04T22:23:25.876618",
-      "data": null
+      "success": true,
+      "message": "Profile picture uploaded successfully",
+      "timestamp": "2025-09-04T22:26:01.171671",
+      "data": {
+        "profile_picture_url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+      }
     }
   },
   "compliance": {
     "transfer_reasons": {
       "success": true,
       "message": "All 10 transfer reasons loaded successfully",
-      "timestamp": "2025-09-04T22:23:26.629677",
+      "timestamp": "2025-09-04T22:26:01.928263",
       "data": [
         {
           "code": "family_support",
@@ -262,22 +390,17 @@
   "payment_methods": {
     "crud_operations": {
       "success": false,
-      "message": "No auth token for payment methods test",
-      "timestamp": "2025-09-04T22:23:26.629731",
+      "message": "Add payment method failed with status 422",
+      "timestamp": "2025-09-04T22:26:01.992912",
       "data": null
     }
   },
   "summary": {
-    "passed": 13,
-    "failed": 7,
+    "passed": 18,
+    "failed": 2,
     "errors": [
-      "authentication.user_registration: Registration failed with status 500: Internal Server Error",
-      "authentication.user_login: Login failed with status 401: {\"detail\":\"Invalid credentials\"}",
-      "authentication.jwt_validation: No auth token available for testing",
-      "kyc_system.profile_picture_upload: No auth token for profile picture test",
-      "countries.get_all_mtn_countries: Get countries failed with status 500",
-      "payment_methods.crud_operations: No auth token for payment methods test",
-      "data_validation.user_transactions: No auth token for transaction test"
+      "authentication.user_registration: Registration failed with status 400: {\"detail\":\"Email already registered\"}",
+      "payment_methods.crud_operations: Add payment method failed with status 422"
     ]
   }
 }
