@@ -3,28 +3,28 @@
     "user_registration": {
       "success": false,
       "message": "Registration failed with status 400: {\"detail\":\"Email already registered\"}",
-      "timestamp": "2025-09-04T22:26:00.514227",
+      "timestamp": "2025-09-04T22:26:57.566425",
       "data": null
     },
     "user_login": {
       "success": true,
       "message": "User login successful with valid token",
-      "timestamp": "2025-09-04T22:26:00.802954",
+      "timestamp": "2025-09-04T22:26:57.848505",
       "data": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGJhMTFjNjQ5Zjk0MDE5MDA0ODJmZjgiLCJleHAiOjE3NTcxMTExNjB9.vwGtfAzVZq9I3z0TzOaLp4zwy-H0L3enfvsjPWorxi8",
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGJhMTFjNjQ5Zjk0MDE5MDA0ODJmZjgiLCJleHAiOjE3NTcxMTEyMTd9.1maU2eSEhQtRLj9GzfscOi2iAeUqUlcrHZb30zHdnCg",
         "token_type": "bearer"
       }
     },
     "invalid_login": {
       "success": true,
       "message": "Invalid login correctly rejected with 401",
-      "timestamp": "2025-09-04T22:26:01.045836",
+      "timestamp": "2025-09-04T22:26:58.093833",
       "data": null
     },
     "jwt_validation": {
       "success": true,
       "message": "JWT token validation successful with KYC data",
-      "timestamp": "2025-09-04T22:26:01.063216",
+      "timestamp": "2025-09-04T22:26:58.106296",
       "data": {
         "id": "68ba11c649f9401900482ff8",
         "kyc_data": {
@@ -50,19 +50,19 @@
           "employer_name": null,
           "annual_income_range": "100k_250k",
           "source_of_funds": "salary",
-          "profile_picture": null
+          "profile_picture": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
         },
         "is_kyc_verified": false,
         "kyc_verification_date": null,
         "is_active": true,
-        "created_at": "2025-09-04T22:26:01.058648",
-        "updated_at": "2025-09-04T22:26:01.058651"
+        "created_at": "2025-09-04T22:26:58.102639",
+        "updated_at": "2025-09-04T22:26:01.126000"
       }
     },
     "protected_without_token": {
       "success": true,
       "message": "Protected endpoint correctly rejected request without token",
-      "timestamp": "2025-09-04T22:26:01.114290",
+      "timestamp": "2025-09-04T22:26:58.155830",
       "data": null
     }
   },
@@ -70,29 +70,7 @@
     "get_enhanced_settings": {
       "success": true,
       "message": "Enhanced admin settings retrieved with all payment providers",
-      "timestamp": "2025-09-04T22:26:01.182408",
-      "data": {
-        "id": "68ba092f90bfc6b7a85b5bab",
-        "mtn_api_key": "test_mtn_api_key_12345",
-        "mtn_api_secret": "test_mtn_secret_67890",
-        "mtn_subscription_key": "test_subscription_key_abcde",
-        "mtn_base_url": "https://sandbox.momodeveloper.mtn.com",
-        "stripe_api_key": "sk_test_stripe_key_12345",
-        "stripe_webhook_secret": null,
-        "paypal_client_id": null,
-        "paypal_client_secret": null,
-        "google_pay_merchant_id": "google_pay_merchant_12345",
-        "apple_pay_merchant_id": "merchant.com.example.remittance",
-        "supabase_url": "https://test.supabase.co",
-        "supabase_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test",
-        "currency_api_key": null,
-        "updated_at": "2025-09-04T22:23:25.938000"
-      }
-    },
-    "update_enhanced_settings": {
-      "success": true,
-      "message": "Enhanced admin settings updated successfully with all payment providers",
-      "timestamp": "2025-09-04T22:26:01.235462",
+      "timestamp": "2025-09-04T22:26:58.222124",
       "data": {
         "id": "68ba092f90bfc6b7a85b5bab",
         "mtn_api_key": "test_mtn_api_key_12345",
@@ -110,13 +88,35 @@
         "currency_api_key": null,
         "updated_at": "2025-09-04T22:26:01.189000"
       }
+    },
+    "update_enhanced_settings": {
+      "success": true,
+      "message": "Enhanced admin settings updated successfully with all payment providers",
+      "timestamp": "2025-09-04T22:26:58.275616",
+      "data": {
+        "id": "68ba092f90bfc6b7a85b5bab",
+        "mtn_api_key": "test_mtn_api_key_12345",
+        "mtn_api_secret": "test_mtn_secret_67890",
+        "mtn_subscription_key": "test_subscription_key_abcde",
+        "mtn_base_url": "https://sandbox.momodeveloper.mtn.com",
+        "stripe_api_key": "sk_test_stripe_key_12345",
+        "stripe_webhook_secret": null,
+        "paypal_client_id": null,
+        "paypal_client_secret": null,
+        "google_pay_merchant_id": "google_pay_merchant_12345",
+        "apple_pay_merchant_id": "merchant.com.example.remittance",
+        "supabase_url": "https://test.supabase.co",
+        "supabase_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test",
+        "currency_api_key": null,
+        "updated_at": "2025-09-04T22:26:58.229000"
+      }
     }
   },
   "countries": {
     "get_all_mtn_countries": {
       "success": true,
       "message": "All 24 MTN MoMo countries loaded with enhanced data (flags, phone codes)",
-      "timestamp": "2025-09-04T22:26:01.249672",
+      "timestamp": "2025-09-04T22:26:58.285433",
       "data": {
         "total_countries": 24,
         "sample": {
@@ -137,7 +137,7 @@
     "USD_to_XAF": {
       "success": true,
       "message": "Exchange rate USD/XAF: 580.0",
-      "timestamp": "2025-09-04T22:26:01.301748",
+      "timestamp": "2025-09-04T22:26:58.299824",
       "data": {
         "rate": 580.0,
         "updated_at": "2025-09-04T21:52:02.012000"
@@ -146,7 +146,7 @@
     "USD_to_NGN": {
       "success": true,
       "message": "Exchange rate USD/NGN: 460.0",
-      "timestamp": "2025-09-04T22:26:01.312374",
+      "timestamp": "2025-09-04T22:26:58.308505",
       "data": {
         "rate": 460.0,
         "updated_at": "2025-09-04T21:52:02.043000"
@@ -155,7 +155,7 @@
     "USD_to_GHS": {
       "success": true,
       "message": "Exchange rate USD/GHS: 12.0",
-      "timestamp": "2025-09-04T22:26:01.363388",
+      "timestamp": "2025-09-04T22:26:58.359135",
       "data": {
         "rate": 12.0,
         "updated_at": "2025-09-04T21:52:02.055000"
@@ -164,7 +164,7 @@
     "USD_to_ZAR": {
       "success": true,
       "message": "Exchange rate USD/ZAR: 18.5",
-      "timestamp": "2025-09-04T22:26:01.375489",
+      "timestamp": "2025-09-04T22:26:58.369613",
       "data": {
         "rate": 18.5,
         "updated_at": "2025-09-04T21:52:02.067000"
@@ -173,7 +173,7 @@
     "USD_to_KES": {
       "success": true,
       "message": "Exchange rate USD/KES: 130.0",
-      "timestamp": "2025-09-04T22:26:01.427250",
+      "timestamp": "2025-09-04T22:26:58.379676",
       "data": {
         "rate": 130.0,
         "updated_at": "2025-09-04T21:52:02.076000"
@@ -182,7 +182,7 @@
     "get_all_rates": {
       "success": true,
       "message": "Retrieved 18 exchange rates",
-      "timestamp": "2025-09-04T22:26:01.438651",
+      "timestamp": "2025-09-04T22:26:58.390169",
       "data": [
         {
           "from_currency": "USD",
@@ -297,7 +297,7 @@
     "enhanced_currencies": {
       "success": true,
       "message": "Enhanced exchange rates working for 14/14 currency pairs",
-      "timestamp": "2025-09-04T22:26:01.877456",
+      "timestamp": "2025-09-04T22:26:58.653239",
       "data": null
     }
   },
@@ -305,16 +305,16 @@
     "health_check": {
       "success": true,
       "message": "API is healthy - Status: healthy",
-      "timestamp": "2025-09-04T22:26:00.499927",
+      "timestamp": "2025-09-04T22:26:57.551382",
       "data": {
         "status": "healthy",
-        "timestamp": "2025-09-04T22:26:00.495605"
+        "timestamp": "2025-09-04T22:26:57.547704"
       }
     },
     "user_transactions": {
       "success": true,
       "message": "User transactions retrieved successfully (0 transactions)",
-      "timestamp": "2025-09-04T22:26:02.045469",
+      "timestamp": "2025-09-04T22:26:58.698665",
       "data": []
     }
   },
@@ -322,7 +322,7 @@
     "profile_picture_upload": {
       "success": true,
       "message": "Profile picture uploaded successfully",
-      "timestamp": "2025-09-04T22:26:01.171671",
+      "timestamp": "2025-09-04T22:26:58.208779",
       "data": {
         "profile_picture_url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
       }
@@ -332,7 +332,7 @@
     "transfer_reasons": {
       "success": true,
       "message": "All 10 transfer reasons loaded successfully",
-      "timestamp": "2025-09-04T22:26:01.928263",
+      "timestamp": "2025-09-04T22:26:58.662702",
       "data": [
         {
           "code": "family_support",
@@ -389,18 +389,27 @@
   },
   "payment_methods": {
     "crud_operations": {
-      "success": false,
-      "message": "Add payment method failed with status 422",
-      "timestamp": "2025-09-04T22:26:01.992912",
-      "data": null
+      "success": true,
+      "message": "Payment method CRUD operations working correctly",
+      "timestamp": "2025-09-04T22:26:58.687501",
+      "data": {
+        "id": "68ba12322996faed7939d010",
+        "user_id": "68ba11c649f9401900482ff8",
+        "method_type": "credit_card",
+        "last_four": "1234",
+        "card_brand": "visa",
+        "expiry_month": 12,
+        "expiry_year": 2025,
+        "is_default": true,
+        "created_at": "2025-09-04T22:26:58.682917"
+      }
     }
   },
   "summary": {
-    "passed": 18,
-    "failed": 2,
+    "passed": 19,
+    "failed": 1,
     "errors": [
-      "authentication.user_registration: Registration failed with status 400: {\"detail\":\"Email already registered\"}",
-      "payment_methods.crud_operations: Add payment method failed with status 422"
+      "authentication.user_registration: Registration failed with status 400: {\"detail\":\"Email already registered\"}"
     ]
   }
 }
