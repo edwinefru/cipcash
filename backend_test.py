@@ -240,12 +240,16 @@ class BackendTester:
             return False
     
     def test_update_admin_settings(self):
-        """Test updating admin settings with MTN credentials"""
+        """Test updating enhanced admin settings with all payment providers"""
         update_data = {
             "mtn_api_key": "test_mtn_api_key_12345",
             "mtn_api_secret": "test_mtn_secret_67890",
             "mtn_subscription_key": "test_subscription_key_abcde",
-            "stripe_api_key": "sk_test_stripe_key_12345"
+            "stripe_api_key": "sk_test_stripe_key_12345",
+            "apple_pay_merchant_id": "merchant.com.example.remittance",
+            "google_pay_merchant_id": "google_pay_merchant_12345",
+            "supabase_url": "https://test.supabase.co",
+            "supabase_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test"
         }
         
         try:
