@@ -179,6 +179,14 @@ class PaymentMethod(BaseModel):
     is_default: bool = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+class PaymentMethodCreate(BaseModel):
+    method_type: str = Field(..., pattern="^(credit_card|debit_card|apple_pay|google_pay|paypal)$")
+    last_four: Optional[str] = None
+    card_brand: Optional[str] = None
+    expiry_month: Optional[int] = None
+    expiry_year: Optional[int] = None
+    is_default: bool = False
+
 class TransferReason(BaseModel):
     code: str
     description: str
