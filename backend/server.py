@@ -336,6 +336,13 @@ async def register(user_data: UserCreate):
     user_dict['password_hash'] = hashed_password
     user_dict['_id'] = ObjectId()
     
+    # Convert date objects to strings for MongoDB compatibility
+    if 'kyc_data' in user_dict:
+        if 'date_of_birth' in user_dict['kyc_data'] and user_dict['kyc_data']['date_of_birth']:
+            user_dict['kyc_data']['date_of_birth'] = str(user_dict['kyc_data']['date_of_birth'])
+        if 'id_expiry_date' in user_dict['kyc_data'] and user_dict['kyc_data']['id_expiry_date']:
+            user_dict['kyc_data']['id_expiry_date'] = str(user_dict['kyc_data']['id_expiry_date'])
+    
     await db.users.insert_one(user_dict)
     
     # Create token
