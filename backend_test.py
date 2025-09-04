@@ -257,13 +257,15 @@ class BackendTester:
             if response.status_code == 200:
                 data = response.json()
                 if (data.get('mtn_api_key') == update_data['mtn_api_key'] and 
-                    data.get('stripe_api_key') == update_data['stripe_api_key']):
-                    self.log_result('admin_settings', 'update_settings', True, 
-                                  "Admin settings updated successfully", data)
+                    data.get('stripe_api_key') == update_data['stripe_api_key'] and
+                    data.get('apple_pay_merchant_id') == update_data['apple_pay_merchant_id'] and
+                    data.get('supabase_url') == update_data['supabase_url']):
+                    self.log_result('admin_settings', 'update_enhanced_settings', True, 
+                                  "Enhanced admin settings updated successfully with all payment providers", data)
                     return True
                 else:
-                    self.log_result('admin_settings', 'update_settings', False, 
-                                  "Admin settings update did not persist correctly")
+                    self.log_result('admin_settings', 'update_enhanced_settings', False, 
+                                  "Enhanced admin settings update did not persist correctly")
                     return False
             else:
                 self.log_result('admin_settings', 'update_settings', False, 
