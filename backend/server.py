@@ -401,12 +401,13 @@ async def get_payment_methods(current_user: User = Depends(get_current_user)):
 
 @api_router.post("/payment-methods", response_model=PaymentMethod)
 async def add_payment_method(
-    method: PaymentMethod,
+    method_create: PaymentMethodCreate,
     current_user: User = Depends(get_current_user)
 ):
-    method.user_id = current_user.id
-    method_dict = method.dict()
+    method_dict = method_create.dict()
+    method_dict['user_id'] = current_user.id
     method_dict['_id'] = ObjectId()
+    method_dict['created_at'] = datetime.utcnow()
     
     await db.payment_methods.insert_one(method_dict)
     return PaymentMethod(**{**method_dict, "id": str(method_dict["_id"])})
