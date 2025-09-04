@@ -320,6 +320,14 @@ async def health_check():
 # Include the router in the main app
 app.include_router(api_router)
 
+# Mount static files for admin dashboard
+try:
+    app.mount("/admin", StaticFiles(directory=ROOT_DIR / "static", html=True), name="static")
+except:
+    # Create static directory if it doesn't exist
+    (ROOT_DIR / "static").mkdir(exist_ok=True)
+    app.mount("/admin", StaticFiles(directory=ROOT_DIR / "static", html=True), name="static")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
