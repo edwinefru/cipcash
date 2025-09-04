@@ -30,6 +30,9 @@ class BackendTester:
             'countries': {},
             'exchange_rates': {},
             'data_validation': {},
+            'kyc_system': {},
+            'compliance': {},
+            'payment_methods': {},
             'summary': {'passed': 0, 'failed': 0, 'errors': []}
         }
         
