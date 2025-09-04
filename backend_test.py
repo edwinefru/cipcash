@@ -180,13 +180,14 @@ class BackendTester:
             response = self.session.get(f"{API_BASE_URL}/auth/me", headers=headers)
             if response.status_code == 200:
                 data = response.json()
-                if 'email' in data and data['email'] == 'john.doe@example.com':
+                if ('kyc_data' in data and 'email' in data['kyc_data'] and 
+                    data['kyc_data']['email'] == 'john.doe@example.com'):
                     self.log_result('authentication', 'jwt_validation', True, 
-                                  "JWT token validation successful", data)
+                                  "JWT token validation successful with KYC data", data)
                     return True
                 else:
                     self.log_result('authentication', 'jwt_validation', False, 
-                                  "JWT validation returned unexpected user data")
+                                  "JWT validation returned unexpected user data structure")
                     return False
             else:
                 self.log_result('authentication', 'jwt_validation', False, 
