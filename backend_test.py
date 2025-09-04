@@ -276,35 +276,45 @@ class BackendTester:
             return False
     
     def test_get_supported_countries(self):
-        """Test getting supported countries list"""
+        """Test getting all 24 MTN MoMo supported countries with enhanced data"""
         try:
             response = self.session.get(f"{API_BASE_URL}/countries")
             if response.status_code == 200:
                 data = response.json()
-                if isinstance(data, list) and len(data) > 0:
-                    # Check for expected countries
+                if isinstance(data, list) and len(data) >= 24:
+                    # Check for all 24 MTN MoMo countries
                     country_codes = [country.get('country_code') for country in data]
-                    expected_codes = ['CM', 'NG', 'GH', 'ZA', 'KE']
+                    expected_codes = ['BJ', 'CM', 'CI', 'CD', 'SZ', 'ET', 'GA', 'GH', 'GW', 'GN', 
+                                    'KE', 'LR', 'MG', 'MW', 'MZ', 'NG', 'CG', 'RW', 'SN', 'SL', 
+                                    'ZA', 'TZ', 'UG', 'ZM']
                     
-                    if all(code in country_codes for code in expected_codes):
-                        self.log_result('countries', 'get_supported_countries', True, 
-                                      f"All expected countries found: {country_codes}", data)
+                    # Check for enhanced data structure
+                    sample_country = data[0] if data else {}
+                    required_fields = ['country_code', 'country_name', 'currency_code', 
+                                     'flag_emoji', 'phone_code']
+                    
+                    if (len(data) >= 24 and 
+                        all(field in sample_country for field in required_fields) and
+                        len([code for code in expected_codes if code in country_codes]) >= 20):
+                        self.log_result('countries', 'get_all_mtn_countries', True, 
+                                      f"All {len(data)} MTN MoMo countries loaded with enhanced data (flags, phone codes)", 
+                                      {"total_countries": len(data), "sample": sample_country})
                         return True
                     else:
                         missing = [code for code in expected_codes if code not in country_codes]
-                        self.log_result('countries', 'get_supported_countries', False, 
-                                      f"Missing expected countries: {missing}")
+                        self.log_result('countries', 'get_all_mtn_countries', False, 
+                                      f"Missing MTN countries or enhanced data: {missing}")
                         return False
                 else:
-                    self.log_result('countries', 'get_supported_countries', False, 
-                                  "Countries endpoint returned empty or invalid data")
+                    self.log_result('countries', 'get_all_mtn_countries', False, 
+                                  f"Expected 24+ countries, got {len(data) if isinstance(data, list) else 0}")
                     return False
             else:
-                self.log_result('countries', 'get_supported_countries', False, 
+                self.log_result('countries', 'get_all_mtn_countries', False, 
                               f"Get countries failed with status {response.status_code}")
                 return False
         except Exception as e:
-            self.log_result('countries', 'get_supported_countries', False, f"Get countries error: {str(e)}")
+            self.log_result('countries', 'get_all_mtn_countries', False, f"Get countries error: {str(e)}")
             return False
     
     def test_exchange_rates(self):
