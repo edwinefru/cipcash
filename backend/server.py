@@ -110,8 +110,8 @@ class RecipientKYC(BaseModel):
     country: str
     
     # Relationship and Purpose
-    relationship_to_sender: str = Field(..., regex="^(family|friend|business|other)$")
-    recipient_type: str = Field(..., regex="^(individual|business)$")
+    relationship_to_sender: str = Field(..., pattern="^(family|friend|business|other)$")
+    recipient_type: str = Field(..., pattern="^(individual|business)$")
     
     # For business recipients
     business_name: Optional[str] = None
