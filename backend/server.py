@@ -38,6 +38,11 @@ security = HTTPBearer()
 # Create the main app
 app = FastAPI(title="CipCash API - Send Money to Africa", version="3.0.0")
 
+@app.get("/")
+async def root():
+    """Serve working mobile app at root URL"""
+    return FileResponse("/app/mobile-app-working.html", media_type="text/html")
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
