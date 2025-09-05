@@ -321,11 +321,11 @@ async def approve_kyc(request: KYCApprovalRequest, admin: User = Depends(is_admi
         user_id = ObjectId(request.user_id)
         update_data = {
             "is_kyc_verified": request.approved,
-            "updated_at": datetime.utcnow()
+            "updated_at": datetime.utcnow().isoformat()  # Convert to string
         }
         
         if request.approved:
-            update_data["kyc_verification_date"] = datetime.utcnow()
+            update_data["kyc_verification_date"] = datetime.utcnow().isoformat()  # Convert to string
             update_data["kyc_rejection_reason"] = None
         else:
             update_data["kyc_rejection_reason"] = request.reason or "KYC documents do not meet requirements"
@@ -350,7 +350,7 @@ async def approve_kyc(request: KYCApprovalRequest, admin: User = Depends(is_admi
             "message": f"Your KYC verification has been {'approved' if request.approved else 'rejected'}",
             "type": "kyc_update",
             "is_read": False,
-            "created_at": datetime.utcnow()
+            "created_at": datetime.utcnow().isoformat()  # Convert to string
         }
         await db.notifications.insert_one(notification)
         
