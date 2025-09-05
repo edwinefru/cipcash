@@ -13,7 +13,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 # Change to the app directory where our HTML file is
 os.chdir('/app')
 
-PORT = 3000
+PORT = 3001
 Handler = MyHTTPRequestHandler
 
 with socketserver.TCPServer(("0.0.0.0", PORT), Handler) as httpd:
