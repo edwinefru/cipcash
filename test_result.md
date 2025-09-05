@@ -223,7 +223,7 @@ backend:
     status_history:
         - working: true
           agent: "testing"
-          comment: "API health check endpoint working correctly. Backend accessible at https://remit-africa.preview.emergentagent.com/api with proper CORS configuration and all endpoints responding correctly."
+          comment: "API health check endpoint working correctly. Backend accessible at https://africa-send.preview.emergentagent.com/api with proper CORS configuration and all endpoints responding correctly."
 
   - task: "Enhanced Country Support - 24 MTN MoMo Countries"
     implemented: true
