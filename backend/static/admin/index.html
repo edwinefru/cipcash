@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RemitAfrica Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --background: #f8fafc;
+            --card-background: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-background);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .logo i {
+            margin-right: 12px;
+            font-size: 28px;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin: 4px 16px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger-color);
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card-background);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--background);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-background);
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Page Content */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-body {
+            padding: 28px;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tr:hover {
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: var(--card-background);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header {
+                padding: 0 16px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-globe-africa"></i>
+                    RemitAfrica
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="#" class="nav-link active" data-page="dashboard">
+                        <i class="fas fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="customers">
+                        <i class="fas fa-users"></i>
+                        Customer Management
+                        <span class="nav-badge" id="pendingKycBadge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="transactions">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transactions
+                        <span class="nav-badge" id="pendingTxBadge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="countries">
+                        <i class="fas fa-flag"></i>
+                        Countries & Rates
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        API Settings
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="compliance">
+                        <i class="fas fa-shield-alt"></i>
+                        Compliance & Reports
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="analytics">
+                        <i class="fas fa-chart-bar"></i>
+                        Analytics
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="header-title" id="pageTitle">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Quick Action
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Dashboard Page -->
+                <div id="dashboard" class="page-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card::before"></div>
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="totalUsers">0</div>
+                            <div class="stat-label">Total Users</div>
+                            <div class="stat-change positive">+12% this month</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="totalTransactions">0</div>
+                            <div class="stat-label">Total Transactions</div>
+                            <div class="stat-change positive">+8% this week</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="totalVolume">$0</div>
+                            <div class="stat-label">Transaction Volume</div>
+                            <div class="stat-change positive">+15% this month</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                                    <i class="fas fa-flag"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value">24</div>
+                            <div class="stat-label">Active Countries</div>
+                            <div class="stat-change positive">100% Coverage</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                            <button class="btn btn-secondary">View All</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Activity</th>
+                                            <th>User</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentActivity">
+                                        <tr>
+                                            <td>2 min ago</td>
+                                            <td>New user registration</td>
+                                            <td>John Doe</td>
+                                            <td><span class="status-badge status-pending">Pending KYC</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Management Page -->
+                <div id="customers" class="page-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Customer Management</h3>
+                            <div>
+                                <button class="btn btn-secondary" onclick="exportCustomers()">
+                                    <i class="fas fa-download"></i>
+                                    Export
+                                </button>
+                                <button class="btn btn-primary" onclick="refreshCustomers()">
+                                    <i class="fas fa-refresh"></i>
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Email</th>
+                                            <th>Country</th>
+                                            <th>KYC Status</th>
+                                            <th>Registered</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="customersTable">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Page -->
+                <div id="transactions" class="page-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Transaction Management</h3>
+                            <div>
+                                <select class="form-select" style="width: auto; margin-right: 12px;">
+                                    <option>All Statuses</option>
+                                    <option>Pending</option>
+                                    <option>Processing</option>
+                                    <option>Completed</option>
+                                    <option>Failed</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="refreshTransactions()">
+                                    <i class="fas fa-refresh"></i>
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Transaction ID</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactionsTable">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page (existing settings content) -->
+                <div id="settings" class="page-content">
+                    <!-- Settings content will be loaded here -->
+                </div>
+
+                <!-- Other pages... -->
+                <div id="countries" class="page-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Countries & Exchange Rates</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Countries and exchange rates management coming soon...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="compliance" class="page-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Compliance & Reports</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Compliance monitoring and reporting tools coming soon...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="analytics" class="page-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Analytics & Insights</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Advanced analytics and business insights coming soon...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentPage = 'dashboard';
+
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = e.target.closest('.nav-link').dataset.page;
+                showPage(page);
+            });
+        });
+
+        function showPage(page) {
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-page="${page}"]`).classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(page).classList.add('active');
+
+            // Update page title
+            const titles = {
+                dashboard: 'Dashboard Overview',
+                customers: 'Customer Management',
+                transactions: 'Transaction Management',
+                countries: 'Countries & Exchange Rates',
+                settings: 'API Settings',
+                compliance: 'Compliance & Reports',
+                analytics: 'Analytics & Insights'
+            };
+            document.getElementById('pageTitle').textContent = titles[page];
+
+            currentPage = page;
+
+            // Load page data
+            loadPageData(page);
+        }
+
+        async function loadPageData(page) {
+            switch(page) {
+                case 'dashboard':
+                    await loadDashboardData();
+                    break;
+                case 'customers':
+                    await loadCustomers();
+                    break;
+                case 'transactions':
+                    await loadTransactions();
+                    break;
+                case 'settings':
+                    await loadSettings();
+                    break;
+            }
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Load basic stats
+                const healthResponse = await fetch(`${API_BASE}/health`);
+                
+                // Simulate some stats for now
+                document.getElementById('totalUsers').textContent = '2';
+                document.getElementById('totalTransactions').textContent = '0';
+                document.getElementById('totalVolume').textContent = '$0';
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                // This would load from /api/admin/customers endpoint
+                // For now, showing placeholder
+                const tbody = document.getElementById('customersTable');
+                tbody.innerHTML = `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">JD</div>
+                                <div>
+                                    <div style="font-weight: 600;">John Doe</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">Software Engineer</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>john.doe@testuser.com</td>
+                        <td>🇺🇸 United States</td>
+                        <td><span class="status-badge status-pending">Pending Verification</span></td>
+                        <td>5 min ago</td>
+                        <td>
+                            <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="approveKyc('user123')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px; margin-left: 8px;" onclick="rejectKyc('user123')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">SJ</div>
+                                <div>
+                                    <div style="font-weight: 600;">Sarah Johnson</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">Business Consultant</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>sarah.johnson@testuser.com</td>
+                        <td>🇨🇦 Canada</td>
+                        <td><span class="status-badge status-pending">Pending Verification</span></td>
+                        <td>8 min ago</td>
+                        <td>
+                            <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="approveKyc('user456')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px; margin-left: 8px;" onclick="rejectKyc('user456')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                
+                // Update badge
+                document.getElementById('pendingKycBadge').textContent = '2';
+                
+            } catch (error) {
+                console.error('Error loading customers:', error);
+            }
+        }
+
+        async function loadTransactions() {
+            try {
+                const tbody = document.getElementById('transactionsTable');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                            <i class="fas fa-exchange-alt" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                            <div>No transactions yet</div>
+                            <div style="font-size: 14px; margin-top: 8px;">Transactions will appear here once users start sending money.</div>
+                        </td>
+                    </tr>
+                `;
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+            }
+        }
+
+        async function loadSettings() {
+            // Load the existing settings content
+            const settingsContent = document.getElementById('settings');
+            settingsContent.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">API Configuration</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div>
+                                <h4 style="margin-bottom: 20px; color: var(--text-primary);">MTN Mobile Money Settings</h4>
+                                <div class="form-group">
+                                    <label class="form-label">MTN API Key</label>
+                                    <input type="text" class="form-input" id="mtn_api_key" placeholder="Enter your MTN API Key">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">MTN API Secret</label>
+                                    <input type="password" class="form-input" id="mtn_api_secret" placeholder="Enter your MTN API Secret">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">MTN Subscription Key</label>
+                                    <input type="text" class="form-input" id="mtn_subscription_key" placeholder="Enter your MTN Subscription Key">
+                                </div>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 20px; color: var(--text-primary);">Payment Providers</h4>
+                                <div class="form-group">
+                                    <label class="form-label">Stripe API Key</label>
+                                    <input type="password" class="form-input" id="stripe_api_key" placeholder="sk_test_...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">PayPal Client ID</label>
+                                    <input type="text" class="form-input" id="paypal_client_id" placeholder="Enter PayPal Client ID">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Apple Pay Merchant ID</label>
+                                    <input type="text" class="form-input" id="apple_pay_merchant_id" placeholder="merchant.com.example.remittance">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 32px;">
+                            <button class="btn btn-primary" onclick="saveSettings()">
+                                <i class="fas fa-save"></i>
+                                Save Configuration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Load current settings
+            try {
+                const response = await fetch(`${API_BASE}/admin/settings`);
+                if (response.ok) {
+                    const settings = await response.json();
+                    Object.keys(settings).forEach(key => {
+                        const input = document.getElementById(key);
+                        if (input && settings[key]) {
+                            input.value = settings[key];
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Admin Actions
+        async function approveKyc(userId) {
+            if (confirm('Approve KYC verification for this user?')) {
+                showAlert('KYC approved successfully!', 'success');
+                // API call would go here
+                await loadCustomers(); // Refresh
+            }
+        }
+
+        async function rejectKyc(userId) {
+            const reason = prompt('Reason for rejection:');
+            if (reason) {
+                showAlert('KYC rejected. User has been notified.', 'success');
+                // API call would go here
+                await loadCustomers(); // Refresh
+            }
+        }
+
+        async function saveSettings() {
+            const settings = {};
+            ['mtn_api_key', 'mtn_api_secret', 'mtn_subscription_key', 'stripe_api_key', 'paypal_client_id', 'apple_pay_merchant_id'].forEach(key => {
+                const input = document.getElementById(key);
+                if (input && input.value.trim()) {
+                    settings[key] = input.value.trim();
+                }
+            });
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+
+                if (response.ok) {
+                    showAlert('Settings saved successfully!', 'success');
+                } else {
+                    showAlert('Error saving settings', 'danger');
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'danger');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}`;
+            document.querySelector('.content').prepend(alertDiv);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPageData('dashboard');
+        });
+
+        // Refresh functions
+        function refreshCustomers() {
+            loadCustomers();
+        }
+
+        function refreshTransactions() {
+            loadTransactions();
+        }
+
+        function exportCustomers() {
+            showAlert('Export feature coming soon!', 'success');
+        }
+    </script>
+</body>
+</html>
