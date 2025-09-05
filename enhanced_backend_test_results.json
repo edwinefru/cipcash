@@ -1,0 +1,82 @@
+{
+  "authentication": {
+    "health_check": {
+      "success": true,
+      "message": "API is healthy - Status: healthy",
+      "timestamp": "2025-09-05T02:33:28.161058",
+      "data": {
+        "status": "healthy",
+        "service": "CipCash API",
+        "timestamp": "2025-09-05T02:33:28.158771"
+      }
+    },
+    "auth_system": {
+      "success": false,
+      "message": "Authentication system test failed",
+      "timestamp": "2025-09-05T02:33:28.414964",
+      "data": null
+    }
+  },
+  "kyc_management": {
+    "kyc_workflow": {
+      "success": false,
+      "message": "No auth token for KYC test",
+      "timestamp": "2025-09-05T02:33:28.415019",
+      "data": null
+    }
+  },
+  "chat_system": {
+    "chat_apis": {
+      "success": false,
+      "message": "No auth token for chat test",
+      "timestamp": "2025-09-05T02:33:28.415029",
+      "data": null
+    }
+  },
+  "analytics": {
+    "analytics_apis": {
+      "success": false,
+      "message": "No auth token for analytics test",
+      "timestamp": "2025-09-05T02:33:28.415037",
+      "data": null
+    }
+  },
+  "countries_exchange": {
+    "countries_and_rates": {
+      "success": true,
+      "message": "Countries & Exchange Rates working - 24 countries, 4 exchange rates",
+      "timestamp": "2025-09-05T02:33:28.657768",
+      "data": {
+        "total_countries": 24,
+        "working_rates": 4
+      }
+    }
+  },
+  "admin_settings": {
+    "enhanced_settings": {
+      "success": true,
+      "message": "Enhanced admin settings working - All payment providers supported",
+      "timestamp": "2025-09-05T02:33:28.765659",
+      "data": null
+    }
+  },
+  "compliance": {
+    "compliance_reporting": {
+      "success": false,
+      "message": "No auth token for compliance test",
+      "timestamp": "2025-09-05T02:33:28.765715",
+      "data": null
+    }
+  },
+  "summary": {
+    "passed": 3,
+    "failed": 5,
+    "errors": [
+      "authentication.auth_system: Authentication system test failed",
+      "kyc_management.kyc_workflow: No auth token for KYC test",
+      "chat_system.chat_apis: No auth token for chat test",
+      "analytics.analytics_apis: No auth token for analytics test",
+      "compliance.compliance_reporting: No auth token for compliance test"
+    ]
+  }
+}
