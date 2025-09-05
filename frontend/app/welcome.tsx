@@ -11,17 +11,13 @@ import {
   Dimensions,
   TextInput,
   Modal,
-  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from 'expo-constants';
 
 const { width, height } = Dimensions.get('window');
-const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 interface Country {
   id: string;
@@ -33,22 +29,8 @@ interface Country {
   phone_code: string;
 }
 
-interface User {
-  id: string;
-  kyc_data: {
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string;
-    profile_picture?: string;
-  };
-  is_kyc_verified: boolean;
-  kyc_rejection_reason?: string;
-}
-
 const WelcomeScreen: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'login' | 'register'>('welcome');
-  const [user, setUser] = useState<User | null>(null);
+  const [currentScreen, setCurrentScreen] = useState('welcome');
   const [countries, setCountries] = useState<Country[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,67 +40,29 @@ const WelcomeScreen: React.FC = () => {
     password: '',
   });
 
-  // Registration form state
-  const [registerStep, setRegisterStep] = useState(1);
+  // Simple registration form
   const [registerForm, setRegisterForm] = useState({
     first_name: '',
-    middle_name: '',
     last_name: '',
-    date_of_birth: '',
-    nationality: '',
-    gender: 'male',
     email: '',
     phone: '',
-    address_line1: '',
-    address_line2: '',
-    city: '',
-    state_province: '',
-    postal_code: '',
-    country: '',
-    id_type: 'passport',
-    id_number: '',
-    id_expiry_date: '',
-    id_issuing_country: '',
-    occupation: '',
-    employer_name: '',
-    annual_income_range: 'under_25k',
-    source_of_funds: 'salary',
     password: '',
     confirmPassword: '',
   });
 
   useEffect(() => {
-    checkAuthStatus();
     loadCountries();
   }, []);
 
-  const checkAuthStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (token) {
-        const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-          router.replace('/(tabs)');
-        }
-      }
-    } catch (error) {
-      console.error('Auth check error:', error);
-    }
-  };
-
   const loadCountries = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/countries`);
-      if (response.ok) {
-        const countriesData = await response.json();
-        setCountries(countriesData);
-      }
+      // Mock countries for demo - in production, would call API
+      const mockCountries = [
+        { id: '1', country_code: 'NG', country_name: 'Nigeria', currency_code: 'NGN', currency_name: 'Nigerian Naira', flag_emoji: '🇳🇬', phone_code: '+234' },
+        { id: '2', country_code: 'GH', country_name: 'Ghana', currency_code: 'GHS', currency_name: 'Ghanaian Cedi', flag_emoji: '🇬🇭', phone_code: '+233' },
+        { id: '3', country_code: 'KE', country_name: 'Kenya', currency_code: 'KES', currency_name: 'Kenyan Shilling', flag_emoji: '🇰🇪', phone_code: '+254' },
+      ];
+      setCountries(mockCountries);
     } catch (error) {
       console.error('Error loading countries:', error);
     }
@@ -131,32 +75,21 @@ const WelcomeScreen: React.FC = () => {
     }
 
     setIsLoading(true);
+    
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginForm),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await AsyncStorage.setItem('authToken', data.access_token);
-        router.replace('/(tabs)');
-      } else {
-        Alert.alert('Login Failed', data.detail || 'Invalid credentials');
-      }
+      // Mock login success for demo
+      Alert.alert('Success', 'Login successful! (Demo mode)', [
+        { text: 'OK', onPress: () => router.replace('/(tabs)') }
+      ]);
     } catch (error) {
-      Alert.alert('Error', 'Network error. Please try again.');
+      Alert.alert('Error', 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleRegister = async () => {
-    if (!registerForm.email || !registerForm.password) {
+    if (!registerForm.email || !registerForm.password || !registerForm.first_name || !registerForm.last_name) {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
@@ -167,34 +100,14 @@ const WelcomeScreen: React.FC = () => {
     }
 
     setIsLoading(true);
+    
     try {
-      const kyc_data = { ...registerForm };
-      delete kyc_data.password;
-      delete kyc_data.confirmPassword;
-
-      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          kyc_data,
-          password: registerForm.password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await AsyncStorage.setItem('authToken', data.access_token);
-        Alert.alert('Success', 'Registration successful! Your KYC verification is pending.', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)') }
-        ]);
-      } else {
-        Alert.alert('Registration Failed', data.detail || 'Registration failed');
-      }
+      // Mock registration success for demo
+      Alert.alert('Success', 'Registration successful! (Demo mode)', [
+        { text: 'OK', onPress: () => router.replace('/(tabs)') }
+      ]);
     } catch (error) {
-      Alert.alert('Error', 'Network error. Please try again.');
+      Alert.alert('Error', 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -324,265 +237,123 @@ const WelcomeScreen: React.FC = () => {
     </KeyboardAvoidingView>
   );
 
-  const renderRegisterScreen = () => {
-    const totalSteps = 5;
-    const progress = (registerStep / totalSteps) * 100;
-
-    return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
+  const renderRegisterScreen = () => (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <LinearGradient
+        colors={['#007AFF', '#0051D5']}
+        style={styles.gradient}
       >
-        <LinearGradient
-          colors={['#007AFF', '#0051D5']}
-          style={styles.gradient}
-        >
-          <ScrollView contentContainerStyle={styles.formContainer}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                if (registerStep > 1) {
-                  setRegisterStep(registerStep - 1);
-                } else {
-                  setCurrentScreen('welcome');
-                }
-              }}
-            >
-              <Ionicons name="arrow-back" size={24} color="white" />
-            </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.formContainer}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => setCurrentScreen('welcome')}
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
 
-            <View style={styles.formHeader}>
-              <Text style={styles.formTitle}>Create Account</Text>
-              <Text style={styles.formSubtitle}>Step {registerStep} of {totalSteps}</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: `${progress}%` }]} />
-              </View>
-            </View>
+          <View style={styles.formHeader}>
+            <Text style={styles.formTitle}>Create Account</Text>
+            <Text style={styles.formSubtitle}>Join CipCash today</Text>
+          </View>
 
-            <BlurView intensity={20} style={styles.formBlur}>
-              <View style={styles.form}>
-                {renderRegisterStep()}
+          <BlurView intensity={20} style={styles.formBlur}>
+            <View style={styles.form}>
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>First Name *</Text>
+                <TextInput
+                  style={styles.input}
+                  value={registerForm.first_name}
+                  onChangeText={(text) => setRegisterForm({ ...registerForm, first_name: text })}
+                  placeholder="Enter first name"
+                  placeholderTextColor="rgba(255,255,255,0.6)"
+                />
               </View>
-            </BlurView>
-          </ScrollView>
-        </LinearGradient>
-      </KeyboardAvoidingView>
-    );
-  };
 
-  const renderRegisterStep = () => {
-    switch (registerStep) {
-      case 1:
-        return (
-          <View>
-            <Text style={styles.stepTitle}>Personal Information</Text>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>First Name *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.first_name}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, first_name: text })}
-                placeholder="Enter first name"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-              />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Last Name *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.last_name}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, last_name: text })}
-                placeholder="Enter last name"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-              />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Date of Birth *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.date_of_birth}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, date_of_birth: text })}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={() => setRegisterStep(2)}
-            >
-              <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 2:
-        return (
-          <View>
-            <Text style={styles.stepTitle}>Contact Information</Text>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Email *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.email}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, email: text })}
-                placeholder="Enter email"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Phone *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.phone}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, phone: text })}
-                placeholder="Enter phone number"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-                keyboardType="phone-pad"
-              />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Address *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.address_line1}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, address_line1: text })}
-                placeholder="Enter address"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={() => setRegisterStep(3)}
-            >
-              <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 3:
-        return (
-          <View>
-            <Text style={styles.stepTitle}>Identification</Text>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>ID Type *</Text>
-              <View style={styles.pickerContainer}>
-                <TouchableOpacity
-                  style={[styles.pickerOption, registerForm.id_type === 'passport' && styles.pickerOptionSelected]}
-                  onPress={() => setRegisterForm({ ...registerForm, id_type: 'passport' })}
-                >
-                  <Text style={styles.pickerOptionText}>Passport</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.pickerOption, registerForm.id_type === 'national_id' && styles.pickerOptionSelected]}
-                  onPress={() => setRegisterForm({ ...registerForm, id_type: 'national_id' })}
-                >
-                  <Text style={styles.pickerOptionText}>National ID</Text>
-                </TouchableOpacity>
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Last Name *</Text>
+                <TextInput
+                  style={styles.input}
+                  value={registerForm.last_name}
+                  onChangeText={(text) => setRegisterForm({ ...registerForm, last_name: text })}
+                  placeholder="Enter last name"
+                  placeholderTextColor="rgba(255,255,255,0.6)"
+                />
               </View>
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>ID Number *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.id_number}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, id_number: text })}
-                placeholder="Enter ID number"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={() => setRegisterStep(4)}
-            >
-              <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 4:
-        return (
-          <View>
-            <Text style={styles.stepTitle}>Employment & Income</Text>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Occupation *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.occupation}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, occupation: text })}
-                placeholder="Enter occupation"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-              />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Annual Income Range *</Text>
-              <View style={styles.pickerContainer}>
-                <TouchableOpacity
-                  style={[styles.pickerOption, registerForm.annual_income_range === 'under_25k' && styles.pickerOptionSelected]}
-                  onPress={() => setRegisterForm({ ...registerForm, annual_income_range: 'under_25k' })}
-                >
-                  <Text style={styles.pickerOptionText}>Under $25k</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.pickerOption, registerForm.annual_income_range === '25k_50k' && styles.pickerOptionSelected]}
-                  onPress={() => setRegisterForm({ ...registerForm, annual_income_range: '25k_50k' })}
-                >
-                  <Text style={styles.pickerOptionText}>$25k - $50k</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={() => setRegisterStep(5)}
-            >
-              <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 5:
-        return (
-          <View>
-            <Text style={styles.stepTitle}>Create Password</Text>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Password *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.password}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, password: text })}
-                placeholder="Enter password"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-                secureTextEntry
-              />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Confirm Password *</Text>
-              <TextInput
-                style={styles.input}
-                value={registerForm.confirmPassword}
-                onChangeText={(text) => setRegisterForm({ ...registerForm, confirmPassword: text })}
-                placeholder="Confirm password"
-                placeholderTextColor="rgba(255,255,255,0.6)"
-                secureTextEntry
-              />
-            </View>
-            <TouchableOpacity
-              style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-              onPress={handleRegister}
-              disabled={isLoading}
-            >
-              <Text style={styles.submitButtonText}>
-                {isLoading ? 'Creating Account...' : 'Create Account'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        );
-    }
-  };
 
-  if (currentScreen === 'welcome') {
-    return renderWelcomeScreen();
-  } else if (currentScreen === 'login') {
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Email *</Text>
+                <TextInput
+                  style={styles.input}
+                  value={registerForm.email}
+                  onChangeText={(text) => setRegisterForm({ ...registerForm, email: text })}
+                  placeholder="Enter email"
+                  placeholderTextColor="rgba(255,255,255,0.6)"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Phone *</Text>
+                <TextInput
+                  style={styles.input}
+                  value={registerForm.phone}
+                  onChangeText={(text) => setRegisterForm({ ...registerForm, phone: text })}
+                  placeholder="Enter phone number"
+                  placeholderTextColor="rgba(255,255,255,0.6)"
+                  keyboardType="phone-pad"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Password *</Text>
+                <TextInput
+                  style={styles.input}
+                  value={registerForm.password}
+                  onChangeText={(text) => setRegisterForm({ ...registerForm, password: text })}
+                  placeholder="Enter password"
+                  placeholderTextColor="rgba(255,255,255,0.6)"
+                  secureTextEntry
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Confirm Password *</Text>
+                <TextInput
+                  style={styles.input}
+                  value={registerForm.confirmPassword}
+                  onChangeText={(text) => setRegisterForm({ ...registerForm, confirmPassword: text })}
+                  placeholder="Confirm password"
+                  placeholderTextColor="rgba(255,255,255,0.6)"
+                  secureTextEntry
+                />
+              </View>
+
+              <TouchableOpacity
+                style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
+                onPress={handleRegister}
+                disabled={isLoading}
+              >
+                <Text style={styles.submitButtonText}>
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </BlurView>
+        </ScrollView>
+      </LinearGradient>
+    </KeyboardAvoidingView>
+  );
+
+  if (currentScreen === 'login') {
     return renderLoginScreen();
-  } else {
+  } else if (currentScreen === 'register') {
     return renderRegisterScreen();
+  } else {
+    return renderWelcomeScreen();
   }
 };
 
@@ -709,17 +480,6 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
     marginBottom: 20,
   },
-  progressBar: {
-    width: 200,
-    height: 4,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: 'white',
-  },
   formBlur: {
     borderRadius: 20,
     overflow: 'hidden',
@@ -727,13 +487,6 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
-  },
-  stepTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'white',
-    marginBottom: 24,
-    textAlign: 'center',
   },
   inputGroup: {
     marginBottom: 20,
@@ -753,40 +506,6 @@ const styles = StyleSheet.create({
     color: 'white',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
-  },
-  pickerContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  pickerOption: {
-    flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-  },
-  pickerOptionSelected: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderColor: 'white',
-  },
-  pickerOptionText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  nextButton: {
-    backgroundColor: 'white',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  nextButtonText: {
-    color: '#007AFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
   submitButton: {
     backgroundColor: 'white',
