@@ -572,6 +572,371 @@ class BackendTester:
             self.log_result('exchange_rates', 'enhanced_currencies', False, 
                           f"Only {successful_rates}/{len(enhanced_currency_pairs)} enhanced currency pairs working")
             return False
+
+    # NEW TESTS FOR ENHANCED FEATURES
+    
+    def test_express_backend_health(self):
+        """Test Express backend health check"""
+        try:
+            response = self.session.get(f"{EXPRESS_BASE_URL.replace('/api', '')}/health")
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('service') == 'CipCash Express Backend':
+                    self.log_result('express_backend', 'health_check', True, 
+                                  f"Express backend healthy - Uptime: {data.get('uptime', 0):.2f}s", data)
+                    return True
+                else:
+                    self.log_result('express_backend', 'health_check', False, 
+                                  "Express backend health check returned unexpected service name")
+                    return False
+            else:
+                self.log_result('express_backend', 'health_check', False, 
+                              f"Express backend health check failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('express_backend', 'health_check', False, f"Express backend health check error: {str(e)}")
+            return False
+
+    def test_kyc_management_system(self):
+        """Test KYC approval/rejection workflow"""
+        if not self.auth_token:
+            self.log_result('kyc_system', 'kyc_management', False, "No auth token for KYC management test")
+            return False
+        
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        
+        try:
+            # Test getting pending KYC users (admin endpoint)
+            response = self.session.get(f"{API_BASE_URL}/admin/kyc/pending", headers=headers)
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_result('kyc_system', 'kyc_management', True, 
+                                  f"KYC management system working - {len(data)} pending users", data)
+                    return True
+                else:
+                    self.log_result('kyc_system', 'kyc_management', False, 
+                                  "KYC pending users endpoint returned invalid format")
+                    return False
+            elif response.status_code == 403:
+                # Expected for non-admin users
+                self.log_result('kyc_system', 'kyc_management', True, 
+                              "KYC management system properly restricts admin access")
+                return True
+            else:
+                self.log_result('kyc_system', 'kyc_management', False, 
+                              f"KYC management test failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('kyc_system', 'kyc_management', False, f"KYC management error: {str(e)}")
+            return False
+
+    def test_chat_system_apis(self):
+        """Test chat system APIs"""
+        if not self.auth_token:
+            self.log_result('chat_system', 'chat_apis', False, "No auth token for chat system test")
+            return False
+        
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        
+        try:
+            # Test creating chat room
+            chat_room_data = {
+                "participants": ["user1", "admin"],
+                "room_type": "admin_user",
+                "title": "Customer Support Chat"
+            }
+            
+            response = self.session.post(f"{API_BASE_URL}/chat/rooms", 
+                                       json=chat_room_data, headers=headers)
+            if response.status_code == 200:
+                room_data = response.json()
+                room_id = room_data.get('id')
+                
+                # Test getting user chat rooms
+                response = self.session.get(f"{API_BASE_URL}/chat/rooms", headers=headers)
+                if response.status_code == 200:
+                    rooms = response.json()
+                    if isinstance(rooms, list):
+                        self.log_result('chat_system', 'chat_apis', True, 
+                                      f"Chat system APIs working - Created room and retrieved {len(rooms)} rooms", 
+                                      {"room_created": room_data, "rooms_count": len(rooms)})
+                        return True
+                    else:
+                        self.log_result('chat_system', 'chat_apis', False, 
+                                      "Chat rooms retrieval returned invalid format")
+                        return False
+                else:
+                    self.log_result('chat_system', 'chat_apis', False, 
+                                  f"Get chat rooms failed with status {response.status_code}")
+                    return False
+            else:
+                self.log_result('chat_system', 'chat_apis', False, 
+                              f"Create chat room failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('chat_system', 'chat_apis', False, f"Chat system APIs error: {str(e)}")
+            return False
+
+    def test_analytics_apis(self):
+        """Test analytics APIs"""
+        if not self.auth_token:
+            self.log_result('analytics', 'analytics_apis', False, "No auth token for analytics test")
+            return False
+        
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        
+        try:
+            # Test transaction analytics
+            response = self.session.get(f"{API_BASE_URL}/admin/analytics/transactions", headers=headers)
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ['total_transactions', 'total_volume', 'success_rate', 'daily_transactions']
+                if all(field in data for field in required_fields):
+                    
+                    # Test user analytics
+                    response = self.session.get(f"{API_BASE_URL}/admin/analytics/users", headers=headers)
+                    if response.status_code == 200:
+                        user_data = response.json()
+                        user_fields = ['total_users', 'verified_users', 'pending_users']
+                        if all(field in user_data for field in user_fields):
+                            self.log_result('analytics', 'analytics_apis', True, 
+                                          f"Analytics APIs working - Transactions: {data['total_transactions']}, Users: {user_data['total_users']}", 
+                                          {"transaction_analytics": data, "user_analytics": user_data})
+                            return True
+                        else:
+                            self.log_result('analytics', 'analytics_apis', False, 
+                                          "User analytics missing required fields")
+                            return False
+                    else:
+                        self.log_result('analytics', 'analytics_apis', False, 
+                                      f"User analytics failed with status {response.status_code}")
+                        return False
+                else:
+                    self.log_result('analytics', 'analytics_apis', False, 
+                                  "Transaction analytics missing required fields")
+                    return False
+            elif response.status_code == 403:
+                # Expected for non-admin users
+                self.log_result('analytics', 'analytics_apis', True, 
+                              "Analytics APIs properly restrict admin access")
+                return True
+            else:
+                self.log_result('analytics', 'analytics_apis', False, 
+                              f"Analytics APIs failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('analytics', 'analytics_apis', False, f"Analytics APIs error: {str(e)}")
+            return False
+
+    def test_compliance_reporting(self):
+        """Test compliance and reporting APIs"""
+        if not self.auth_token:
+            self.log_result('compliance', 'compliance_reporting', False, "No auth token for compliance test")
+            return False
+        
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        
+        try:
+            # Test compliance report
+            response = self.session.get(f"{API_BASE_URL}/admin/compliance/report", headers=headers)
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ['kyc_completion_rate', 'aml_flagged_transactions', 'compliance_score']
+                if all(field in data for field in required_fields):
+                    self.log_result('compliance', 'compliance_reporting', True, 
+                                  f"Compliance reporting working - KYC rate: {data['kyc_completion_rate']}%, Score: {data['compliance_score']}", 
+                                  data)
+                    return True
+                else:
+                    missing_fields = [field for field in required_fields if field not in data]
+                    self.log_result('compliance', 'compliance_reporting', False, 
+                                  f"Compliance report missing fields: {missing_fields}")
+                    return False
+            elif response.status_code == 403:
+                # Expected for non-admin users
+                self.log_result('compliance', 'compliance_reporting', True, 
+                              "Compliance reporting properly restricts admin access")
+                return True
+            else:
+                self.log_result('compliance', 'compliance_reporting', False, 
+                              f"Compliance reporting failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('compliance', 'compliance_reporting', False, f"Compliance reporting error: {str(e)}")
+            return False
+
+    def test_express_realtime_features(self):
+        """Test Express backend real-time features"""
+        try:
+            # Test live exchange rates
+            response = self.session.get(f"{EXPRESS_BASE_URL}/realtime/exchange-rates/live")
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, dict) and 'USD-NGN' in data:
+                    rate_data = data['USD-NGN']
+                    if 'rate' in rate_data and 'change' in rate_data and 'timestamp' in rate_data:
+                        
+                        # Test transaction status tracking
+                        test_tx_id = "test_transaction_123"
+                        response = self.session.get(f"{EXPRESS_BASE_URL}/realtime/transactions/{test_tx_id}/status")
+                        if response.status_code == 200:
+                            tx_data = response.json()
+                            if 'transactionId' in tx_data and 'status' in tx_data:
+                                self.log_result('realtime_features', 'express_realtime', True, 
+                                              f"Express real-time features working - Live rates and transaction tracking", 
+                                              {"live_rates": data, "transaction_status": tx_data})
+                                return True
+                            else:
+                                self.log_result('realtime_features', 'express_realtime', False, 
+                                              "Transaction status tracking missing required fields")
+                                return False
+                        else:
+                            self.log_result('realtime_features', 'express_realtime', False, 
+                                          f"Transaction status tracking failed with status {response.status_code}")
+                            return False
+                    else:
+                        self.log_result('realtime_features', 'express_realtime', False, 
+                                      "Live exchange rates missing required fields")
+                        return False
+                else:
+                    self.log_result('realtime_features', 'express_realtime', False, 
+                                  "Live exchange rates returned invalid format")
+                    return False
+            else:
+                self.log_result('realtime_features', 'express_realtime', False, 
+                              f"Express real-time features failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('realtime_features', 'express_realtime', False, f"Express real-time features error: {str(e)}")
+            return False
+
+    def test_express_chat_integration(self):
+        """Test Express backend chat integration"""
+        try:
+            # Test Express chat room creation
+            chat_data = {
+                "participants": ["user1", "admin"],
+                "room_type": "admin_user", 
+                "title": "Express Chat Test"
+            }
+            
+            response = self.session.post(f"{EXPRESS_BASE_URL}/chat/rooms", json=chat_data)
+            if response.status_code == 200:
+                room_data = response.json()
+                room_id = room_data.get('id')
+                
+                # Test sending message
+                message_data = {
+                    "message": "Test message from Express backend",
+                    "chat_room_id": room_id,
+                    "receiver_id": "admin",
+                    "sender_id": "user1"
+                }
+                
+                response = self.session.post(f"{EXPRESS_BASE_URL}/chat/messages", json=message_data)
+                if response.status_code == 200:
+                    msg_data = response.json()
+                    if 'id' in msg_data and 'message' in msg_data:
+                        self.log_result('chat_system', 'express_chat_integration', True, 
+                                      f"Express chat integration working - Room created and message sent", 
+                                      {"room": room_data, "message": msg_data})
+                        return True
+                    else:
+                        self.log_result('chat_system', 'express_chat_integration', False, 
+                                      "Express chat message response missing required fields")
+                        return False
+                else:
+                    self.log_result('chat_system', 'express_chat_integration', False, 
+                                  f"Express chat message sending failed with status {response.status_code}")
+                    return False
+            else:
+                self.log_result('chat_system', 'express_chat_integration', False, 
+                              f"Express chat room creation failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('chat_system', 'express_chat_integration', False, f"Express chat integration error: {str(e)}")
+            return False
+
+    def test_express_analytics_integration(self):
+        """Test Express backend analytics integration"""
+        try:
+            # Test transaction summary
+            response = self.session.get(f"{EXPRESS_BASE_URL}/analytics/transactions/summary")
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ['totalTransactions', 'totalVolume', 'successRate', 'topCountries']
+                if all(field in data for field in required_fields):
+                    
+                    # Test user growth analytics
+                    response = self.session.get(f"{EXPRESS_BASE_URL}/analytics/users/growth")
+                    if response.status_code == 200:
+                        user_data = response.json()
+                        user_fields = ['totalUsers', 'newUsersToday', 'activeUsers']
+                        if all(field in user_data for field in user_fields):
+                            
+                            # Test revenue summary
+                            response = self.session.get(f"{EXPRESS_BASE_URL}/analytics/revenue/summary")
+                            if response.status_code == 200:
+                                revenue_data = response.json()
+                                revenue_fields = ['totalRevenue', 'monthlyRevenue', 'revenueGrowth']
+                                if all(field in revenue_data for field in revenue_fields):
+                                    self.log_result('analytics', 'express_analytics_integration', True, 
+                                                  f"Express analytics integration working - Transactions: {data['totalTransactions']}, Revenue: ${revenue_data['totalRevenue']}", 
+                                                  {"transactions": data, "users": user_data, "revenue": revenue_data})
+                                    return True
+                                else:
+                                    self.log_result('analytics', 'express_analytics_integration', False, 
+                                                  "Express revenue analytics missing required fields")
+                                    return False
+                            else:
+                                self.log_result('analytics', 'express_analytics_integration', False, 
+                                              f"Express revenue analytics failed with status {response.status_code}")
+                                return False
+                        else:
+                            self.log_result('analytics', 'express_analytics_integration', False, 
+                                          "Express user analytics missing required fields")
+                            return False
+                    else:
+                        self.log_result('analytics', 'express_analytics_integration', False, 
+                                      f"Express user analytics failed with status {response.status_code}")
+                        return False
+                else:
+                    self.log_result('analytics', 'express_analytics_integration', False, 
+                                  "Express transaction analytics missing required fields")
+                    return False
+            else:
+                self.log_result('analytics', 'express_analytics_integration', False, 
+                              f"Express analytics integration failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('analytics', 'express_analytics_integration', False, f"Express analytics integration error: {str(e)}")
+            return False
+
+    def test_express_compliance_metrics(self):
+        """Test Express backend compliance metrics"""
+        try:
+            response = self.session.get(f"{EXPRESS_BASE_URL}/analytics/compliance/metrics")
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ['kycCompletionRate', 'amlFlagged', 'complianceScore', 'regulatoryReports']
+                if all(field in data for field in required_fields):
+                    self.log_result('compliance', 'express_compliance_metrics', True, 
+                                  f"Express compliance metrics working - KYC: {data['kycCompletionRate']}%, Score: {data['complianceScore']}", 
+                                  data)
+                    return True
+                else:
+                    missing_fields = [field for field in required_fields if field not in data]
+                    self.log_result('compliance', 'express_compliance_metrics', False, 
+                                  f"Express compliance metrics missing fields: {missing_fields}")
+                    return False
+            else:
+                self.log_result('compliance', 'express_compliance_metrics', False, 
+                              f"Express compliance metrics failed with status {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result('compliance', 'express_compliance_metrics', False, f"Express compliance metrics error: {str(e)}")
+            return False
     
     def run_all_tests(self):
         """Run all enhanced v2.0 backend tests"""
