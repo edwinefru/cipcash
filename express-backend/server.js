@@ -125,6 +125,10 @@ const updateTransactionStatus = (transactionId, status, data = {}) => {
 app.use('/api/realtime', require('./routes/realtime'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/analytics', require('./routes/analytics'));
+app.use('/api/chat', require('./routes/chat'));
+
+// Make Socket.IO available to routes
+app.set('io', io);
 
 // Proxy FastAPI requests
 app.use('/api/v1', createProxyMiddleware({
