@@ -273,11 +273,14 @@ async def initialize_default_data():
         if not existing:
             await db.transfer_reasons.insert_one(reason_data)
     
-    # Initialize admin settings
-    existing_settings = await db.admin_settings.find_one()
-    if not existing_settings:
-        settings = AdminSettings()
-        await db.admin_settings.insert_one(settings.dict())
+    # Initialize Admin Settings
+    admin_settings = await db.admin_settings.find_one()
+    if not admin_settings:
+        admin_settings_data = AdminSettings().dict()
+        admin_settings_data["_id"] = ObjectId()
+        admin_settings_data["updated_at"] = datetime.utcnow().isoformat()  # Convert to string
+        await db.admin_settings.insert_one(admin_settings_data)
+        logger.info("✅ Admin settings initialized")
 
 # Authentication Routes
 @api_router.post("/auth/register", response_model=Token)
