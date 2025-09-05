@@ -10,7 +10,6 @@ import time
 from datetime import datetime
 import os
 from dotenv import load_dotenv
-import socketio
 
 # Load environment variables
 load_dotenv('/app/frontend/.env')
