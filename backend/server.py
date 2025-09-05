@@ -45,7 +45,7 @@ class UserKYC(BaseModel):
     first_name: str
     middle_name: Optional[str] = None
     last_name: str
-    date_of_birth: date
+    date_of_birth: str  # Changed from date to str for MongoDB compatibility
     nationality: str
     gender: str = Field(..., pattern="^(male|female|other)$")
     email: str
@@ -58,7 +58,7 @@ class UserKYC(BaseModel):
     country: str
     id_type: str = Field(..., pattern="^(passport|national_id|drivers_license|other)$")
     id_number: str
-    id_expiry_date: Optional[date] = None
+    id_expiry_date: Optional[str] = None  # Changed from date to str for MongoDB compatibility
     id_issuing_country: str
     occupation: str
     employer_name: Optional[str] = None
