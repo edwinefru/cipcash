@@ -580,7 +580,7 @@ async def update_exchange_rates(rates: Dict[str, float], admin: User = Depends(i
         from_currency, to_currency = rate_pair.split("-")
         await db.exchange_rates.update_one(
             {"from_currency": from_currency, "to_currency": to_currency},
-            {"$set": {"rate": rate_value, "updated_at": datetime.utcnow()}},
+            {"$set": {"rate": rate_value, "updated_at": datetime.utcnow().isoformat()}},  # Convert to string
             upsert=True
         )
     
