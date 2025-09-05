@@ -27,6 +27,7 @@ class BackendTester:
     def __init__(self):
         self.session = requests.Session()
         self.auth_token = None
+        self.user_id = None
         self.test_results = {
             'authentication': {},
             'admin_settings': {},
@@ -36,6 +37,10 @@ class BackendTester:
             'kyc_system': {},
             'compliance': {},
             'payment_methods': {},
+            'chat_system': {},
+            'analytics': {},
+            'express_backend': {},
+            'realtime_features': {},
             'summary': {'passed': 0, 'failed': 0, 'errors': []}
         }
         
