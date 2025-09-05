@@ -133,7 +133,7 @@ class AdminSettings(BaseModel):
     compliance_webhook_url: Optional[str] = None
     aml_screening_api_key: Optional[str] = None
     
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())  # Changed from datetime to str
 
 class SupportedCountry(BaseModel):
     id: str = Field(default_factory=lambda: str(ObjectId()))
