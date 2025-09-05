@@ -158,7 +158,7 @@ class ChatMessage(BaseModel):
     message_type: str = "text"  # text, image, file
     chat_room_id: str
     is_read: bool = False
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())  # Changed from datetime to str
 
 class ChatRoom(BaseModel):
     id: str = Field(default_factory=lambda: str(ObjectId()))
@@ -166,8 +166,8 @@ class ChatRoom(BaseModel):
     room_type: str  # admin_user, user_beneficiary
     title: str
     last_message: Optional[str] = None
-    last_message_time: Optional[datetime] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    last_message_time: Optional[str] = None  # Changed from datetime to str
+    created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())  # Changed from datetime to str
 
 class TransactionAnalytics(BaseModel):
     total_transactions: int
