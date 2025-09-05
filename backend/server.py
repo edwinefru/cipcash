@@ -603,7 +603,7 @@ async def update_admin_settings(settings_update: dict):
         raise HTTPException(status_code=404, detail="Settings not found")
     
     update_data = {k: v for k, v in settings_update.items() if v is not None}
-    update_data['updated_at'] = datetime.utcnow()
+    update_data['updated_at'] = datetime.utcnow().isoformat()  # Convert to string
     
     await db.admin_settings.update_one(
         {"_id": existing_settings["_id"]},
