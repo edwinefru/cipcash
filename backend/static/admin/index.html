@@ -1326,6 +1326,10 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadPageData('dashboard');
+            startRealTimeUpdates();
+            
+            // Load additional data for enhanced dashboard
+            loadAnalytics();
         });
 
         // Refresh functions
