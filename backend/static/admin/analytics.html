@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Insights - CipCash Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --background: #f8fafc;
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --sidebar-width: 280px;
+            --header-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 24px 0;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card-background);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .analytics-card {
+            background: var(--card-background);
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metric:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .metric-change {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-left: 8px;
+        }
+
+        .metric-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .metric-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .chart-container {
+            background: var(--card-background);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .time-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .time-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: var(--card-background);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .time-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .top-countries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .country-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--background);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .country-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .country-flag {
+            font-size: 32px;
+            margin-right: 16px;
+        }
+
+        .country-info {
+            flex: 1;
+        }
+
+        .country-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .country-volume {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .country-percentage {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--background);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-globe-africa"></i>
+                    CipCash Admin
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-chart-bar"></i>
+                        Analytics
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Customer Management
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transactions
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-flag"></i>
+                        Countries & Rates
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="header-title">Analytics & Insights</h1>
+                <div>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-download"></i>
+                        Export Report
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-sync"></i>
+                        Refresh Data
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Key Metrics -->
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3 class="card-title">Revenue Analytics</h3>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Total Revenue</div>
+                                <div class="metric-value">$892,400</div>
+                            </div>
+                            <div class="metric-change positive">+12.5%</div>
+                        </div>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Monthly Revenue</div>
+                                <div class="metric-value">$89,240</div>
+                            </div>
+                            <div class="metric-change positive">+8.3%</div>
+                        </div>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Revenue per User</div>
+                                <div class="metric-value">$6.94</div>
+                            </div>
+                            <div class="metric-change positive">+5.2%</div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3 class="card-title">Transaction Metrics</h3>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Total Volume</div>
+                                <div class="metric-value">$2.4M</div>
+                            </div>
+                            <div class="metric-change positive">+15.2%</div>
+                        </div>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Success Rate</div>
+                                <div class="metric-value">98.7%</div>
+                            </div>
+                            <div class="metric-change positive">+0.5%</div>
+                        </div>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Avg Transaction</div>
+                                <div class="metric-value">$716</div>
+                            </div>
+                            <div class="metric-change negative">-2.1%</div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3 class="card-title">User Growth</h3>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Total Users</div>
+                                <div class="metric-value">12,847</div>
+                            </div>
+                            <div class="metric-change positive">+12%</div>
+                        </div>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">Active Users</div>
+                                <div class="metric-value">8,932</div>
+                            </div>
+                            <div class="metric-change positive">+8%</div>
+                        </div>
+                        <div class="metric">
+                            <div>
+                                <div class="metric-label">KYC Completion</div>
+                                <div class="metric-value">92.3%</div>
+                            </div>
+                            <div class="metric-change positive">+3.1%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Volume Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Transaction Volume Trends</h3>
+                        <div class="time-selector">
+                            <button class="time-btn" onclick="changeTimeRange('7d')">7 Days</button>
+                            <button class="time-btn active" onclick="changeTimeRange('30d')">30 Days</button>
+                            <button class="time-btn" onclick="changeTimeRange('90d')">90 Days</button>
+                            <button class="time-btn" onclick="changeTimeRange('1y')">1 Year</button>
+                        </div>
+                    </div>
+                    <canvas id="volumeChart" width="400" height="200"></canvas>
+                </div>
+
+                <!-- Revenue Breakdown -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Revenue Sources</h3>
+                    </div>
+                    <canvas id="revenueChart" width="400" height="200"></canvas>
+                </div>
+
+                <!-- Top Countries Performance -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Top Performing Countries</h3>
+                    </div>
+                    <div class="top-countries">
+                        <div class="country-item">
+                            <div class="country-flag">🇳🇬</div>
+                            <div class="country-info">
+                                <div class="country-name">Nigeria</div>
+                                <div class="country-volume">$324,500 volume</div>
+                            </div>
+                            <div class="country-percentage">36.4%</div>
+                        </div>
+                        <div class="country-item">
+                            <div class="country-flag">🇬🇭</div>
+                            <div class="country-info">
+                                <div class="country-name">Ghana</div>
+                                <div class="country-volume">$198,600 volume</div>
+                            </div>
+                            <div class="country-percentage">22.3%</div>
+                        </div>
+                        <div class="country-item">
+                            <div class="country-flag">🇰🇪</div>
+                            <div class="country-info">
+                                <div class="country-name">Kenya</div>
+                                <div class="country-volume">$167,300 volume</div>
+                            </div>
+                            <div class="country-percentage">18.7%</div>
+                        </div>
+                        <div class="country-item">
+                            <div class="country-flag">🇿🇦</div>
+                            <div class="country-info">
+                                <div class="country-name">South Africa</div>
+                                <div class="country-volume">$134,200 volume</div>
+                            </div>
+                            <div class="country-percentage">15.0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compliance Metrics -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Compliance & Risk Metrics</h3>
+                    </div>
+                    <div class="analytics-grid">
+                        <div style="text-align: center;">
+                            <div style="font-size: 48px; font-weight: bold; color: var(--success-color); margin-bottom: 8px;">96.8</div>
+                            <div style="color: var(--text-secondary);">Compliance Score</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 48px; font-weight: bold; color: var(--warning-color); margin-bottom: 8px;">23</div>
+                            <div style="color: var(--text-secondary);">AML Flagged</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 48px; font-weight: bold; color: var(--primary-color); margin-bottom: 8px;">92.3%</div>
+                            <div style="color: var(--text-secondary);">KYC Completion</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let volumeChart;
+        let revenueChart;
+
+        function initializeCharts() {
+            // Volume Chart
+            const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+            volumeChart = new Chart(volumeCtx, {
+                type: 'line',
+                data: {
+                    labels: generateDateLabels(30),
+                    datasets: [{
+                        label: 'Transaction Volume ($)',
+                        data: generateVolumeData(30),
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(revenueCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Transfer Fees', 'Exchange Margin', 'Premium Features'],
+                    datasets: [{
+                        data: [51.2, 36.3, 12.5],
+                        backgroundColor: [
+                            '#2563eb',
+                            '#10b981',
+                            '#f59e0b'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateDateLabels(days) {
+            const labels = [];
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            }
+            return labels;
+        }
+
+        function generateVolumeData(days) {
+            const data = [];
+            for (let i = 0; i < days; i++) {
+                data.push(Math.floor(Math.random() * 50000) + 25000);
+            }
+            return data;
+        }
+
+        function changeTimeRange(range) {
+            // Update active button
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update chart data based on range
+            let days;
+            switch(range) {
+                case '7d': days = 7; break;
+                case '30d': days = 30; break;
+                case '90d': days = 90; break;
+                case '1y': days = 365; break;
+                default: days = 30;
+            }
+
+            volumeChart.data.labels = generateDateLabels(days);
+            volumeChart.data.datasets[0].data = generateVolumeData(days);
+            volumeChart.update();
+        }
+
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeCharts();
+        });
+    </script>
+</body>
+</html>

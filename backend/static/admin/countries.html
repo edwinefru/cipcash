@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countries & Exchange Rates - CipCash Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --background: #f8fafc;
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --sidebar-width: 280px;
+            --header-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 24px 0;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card-background);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-background);
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-body {
+            padding: 28px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .table tr:hover {
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: var(--card-background);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .country-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .country-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .country-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .country-flag {
+            font-size: 32px;
+            margin-right: 12px;
+        }
+
+        .country-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .country-info p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .country-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .rate-update {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .rate-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rate-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .update-btn {
+            padding: 8px 12px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-globe-africa"></i>
+                    CipCash Admin
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-flag"></i>
+                        Countries & Rates
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Customer Management
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transactions
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/api/admin-dashboard" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        API Settings
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="header-title">Countries & Exchange Rates</h1>
+            </header>
+
+            <div class="content">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalCountries">24</div>
+                        <div class="stat-label">Supported Countries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="activeCountries">24</div>
+                        <div class="stat-label">Active Countries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalCurrencies">16</div>
+                        <div class="stat-label">Supported Currencies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="lastUpdate">Just now</div>
+                        <div class="stat-label">Last Rate Update</div>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Bulk Rate Update</h3>
+                        <button class="btn btn-primary" onclick="updateAllRates()">
+                            <i class="fas fa-sync"></i>
+                            Update All Rates
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Global Rate Adjustment (%)</label>
+                            <input type="number" class="form-input" id="globalAdjustment" placeholder="e.g., 2.5 for 2.5% increase" step="0.1">
+                        </div>
+                        <button class="btn btn-warning" onclick="applyGlobalAdjustment()">
+                            <i class="fas fa-percentage"></i>
+                            Apply Global Adjustment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Countries Grid -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Country Management</h3>
+                        <div>
+                            <button class="btn btn-success" onclick="addNewCountry()">
+                                <i class="fas fa-plus"></i>
+                                Add Country
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="countries-grid" id="countriesGrid">
+                            <!-- Countries will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        // Sample countries data
+        const countriesData = [
+            { id: '1', country_code: 'NG', country_name: 'Nigeria', currency_code: 'NGN', currency_name: 'Nigerian Naira', flag_emoji: '🇳🇬', phone_code: '+234', is_active: true, current_rate: 460.0 },
+            { id: '2', country_code: 'GH', country_name: 'Ghana', currency_code: 'GHS', currency_name: 'Ghanaian Cedi', flag_emoji: '🇬🇭', phone_code: '+233', is_active: true, current_rate: 12.0 },
+            { id: '3', country_code: 'KE', country_name: 'Kenya', currency_code: 'KES', currency_name: 'Kenyan Shilling', flag_emoji: '🇰🇪', phone_code: '+254', is_active: true, current_rate: 130.0 },
+            { id: '4', country_code: 'ZA', country_name: 'South Africa', currency_code: 'ZAR', currency_name: 'South African Rand', flag_emoji: '🇿🇦', phone_code: '+27', is_active: true, current_rate: 18.5 },
+            { id: '5', country_code: 'CM', country_name: 'Cameroon', currency_code: 'XAF', currency_name: 'Central African CFA Franc', flag_emoji: '🇨🇲', phone_code: '+237', is_active: true, current_rate: 600.0 },
+            { id: '6', country_code: 'SN', country_name: 'Senegal', currency_code: 'XOF', currency_name: 'West African CFA Franc', flag_emoji: '🇸🇳', phone_code: '+221', is_active: true, current_rate: 580.0 },
+            { id: '7', country_code: 'UG', country_name: 'Uganda', currency_code: 'UGX', currency_name: 'Ugandan Shilling', flag_emoji: '🇺🇬', phone_code: '+256', is_active: true, current_rate: 3700.0 },
+            { id: '8', country_code: 'TZ', country_name: 'Tanzania', currency_code: 'TZS', currency_name: 'Tanzanian Shilling', flag_emoji: '🇹🇿', phone_code: '+255', is_active: true, current_rate: 2300.0 }
+        ];
+
+        function loadCountries() {
+            const grid = document.getElementById('countriesGrid');
+            grid.innerHTML = '';
+
+            countriesData.forEach(country => {
+                const countryCard = createCountryCard(country);
+                grid.appendChild(countryCard);
+            });
+        }
+
+        function createCountryCard(country) {
+            const card = document.createElement('div');
+            card.className = 'country-card';
+            card.innerHTML = `
+                <div class="country-header">
+                    <div class="country-flag">${country.flag_emoji}</div>
+                    <div class="country-info">
+                        <h3>${country.country_name}</h3>
+                        <p>${country.currency_name} (${country.currency_code})</p>
+                    </div>
+                </div>
+                <div class="country-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Phone Code</div>
+                        <div class="detail-value">${country.phone_code}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">
+                            <span class="${country.is_active ? 'status-active' : 'status-inactive'}">
+                                ${country.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Current Rate (USD)</div>
+                        <div class="detail-value">1 USD = ${country.current_rate} ${country.currency_code}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Last Updated</div>
+                        <div class="detail-value">5 min ago</div>
+                    </div>
+                </div>
+                <div class="rate-update">
+                    <div class="rate-input-group">
+                        <input type="number" class="rate-input" placeholder="New rate" step="0.01" id="rate_${country.id}">
+                        <button class="update-btn" onclick="updateCountryRate('${country.id}', '${country.currency_code}')">
+                            <i class="fas fa-save"></i> Update
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        async function updateCountryRate(countryId, currencyCode) {
+            const rateInput = document.getElementById(`rate_${countryId}`);
+            const newRate = parseFloat(rateInput.value);
+            
+            if (!newRate || newRate <= 0) {
+                showAlert('Please enter a valid rate', 'danger');
+                return;
+            }
+
+            try {
+                // In production, this would call the API
+                showAlert(`Exchange rate updated: 1 USD = ${newRate} ${currencyCode}`, 'success');
+                rateInput.value = '';
+                
+                // Update the display
+                loadCountries();
+            } catch (error) {
+                showAlert('Error updating exchange rate', 'danger');
+            }
+        }
+
+        async function updateAllRates() {
+            showAlert('Updating all exchange rates from external API...', 'success');
+            // Simulate API call
+            setTimeout(() => {
+                showAlert('All exchange rates updated successfully!', 'success');
+                loadCountries();
+            }, 2000);
+        }
+
+        async function applyGlobalAdjustment() {
+            const adjustment = parseFloat(document.getElementById('globalAdjustment').value);
+            
+            if (!adjustment) {
+                showAlert('Please enter an adjustment percentage', 'danger');
+                return;
+            }
+
+            const confirmMsg = adjustment > 0 
+                ? `Increase all rates by ${adjustment}%?`
+                : `Decrease all rates by ${Math.abs(adjustment)}%?`;
+                
+            if (confirm(confirmMsg)) {
+                showAlert(`Applied ${adjustment}% adjustment to all exchange rates`, 'success');
+                document.getElementById('globalAdjustment').value = '';
+                loadCountries();
+            }
+        }
+
+        function addNewCountry() {
+            const countryName = prompt('Enter country name:');
+            if (countryName) {
+                showAlert(`New country "${countryName}" added to review queue`, 'success');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}`;
+            document.querySelector('.content').prepend(alertDiv);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCountries();
+        });
+    </script>
+</body>
+</html>
