@@ -13,7 +13,7 @@
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
     "expo": "~53.0.20",
-    "expo-apple-pay": "~3.0.0",
+
     "expo-av": "~15.0.1", 
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.2",
