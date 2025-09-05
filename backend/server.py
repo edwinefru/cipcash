@@ -292,6 +292,21 @@ async def register(user_data: UserCreate):
     user_dict['password_hash'] = hashed_password
     user_dict['_id'] = ObjectId()
     
+    # Convert date objects to strings for MongoDB compatibility
+    if 'kyc_data' in user_dict and 'date_of_birth' in user_dict['kyc_data']:
+        if isinstance(user_dict['kyc_data']['date_of_birth'], date):
+            user_dict['kyc_data']['date_of_birth'] = user_dict['kyc_data']['date_of_birth'].isoformat()
+    
+    if 'kyc_data' in user_dict and 'id_expiry_date' in user_dict['kyc_data']:
+        if isinstance(user_dict['kyc_data']['id_expiry_date'], date):
+            user_dict['kyc_data']['id_expiry_date'] = user_dict['kyc_data']['id_expiry_date'].isoformat()
+    
+    # Convert datetime objects to strings
+    if isinstance(user_dict.get('created_at'), datetime):
+        user_dict['created_at'] = user_dict['created_at'].isoformat()
+    if isinstance(user_dict.get('updated_at'), datetime):
+        user_dict['updated_at'] = user_dict['updated_at'].isoformat()
+    
     await db.users.insert_one(user_dict)
     
     access_token = create_access_token(data={"sub": str(user_dict['_id'])})
