@@ -70,11 +70,11 @@ class User(BaseModel):
     id: str = Field(default_factory=lambda: str(ObjectId()))
     kyc_data: UserKYC
     is_kyc_verified: bool = False
-    kyc_verification_date: Optional[datetime] = None
+    kyc_verification_date: Optional[str] = None  # Changed from datetime to str
     kyc_rejection_reason: Optional[str] = None
     is_active: bool = True
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())  # Changed from datetime to str
+    updated_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())  # Changed from datetime to str
 
 class UserCreate(BaseModel):
     kyc_data: UserKYC
