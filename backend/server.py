@@ -565,7 +565,7 @@ async def get_exchange_rate(from_currency: str, to_currency: str):
                 "from_currency": from_currency.upper(),
                 "to_currency": to_currency.upper(),
                 "rate": default_rates[rate_key],
-                "updated_at": datetime.utcnow()
+                "updated_at": datetime.utcnow().isoformat()  # Convert to string
             }
             await db.exchange_rates.insert_one(rate_data)
             return {"rate": default_rates[rate_key], "updated_at": rate_data["updated_at"]}
