@@ -573,7 +573,7 @@ logger = logging.getLogger(__name__)
 @app.on_event("startup")
 async def startup_event():
     await initialize_default_data()
-    logger.info("Mobile Money Remittance API v2.0 started successfully")
+    logger.info("CipCash API v2.0 started successfully - Send Money to Africa!")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
