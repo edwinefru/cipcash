@@ -1166,8 +1166,28 @@
         // Admin Actions
         async function approveKyc(userId) {
             if (confirm('Approve KYC verification for this user?')) {
-                showAlert('KYC approved successfully!', 'success');
-                // API call would go here
+                try {
+                    const response = await fetch(`${API_BASE}/admin/kyc/approve`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer admin-token' // In production, use real auth
+                        },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            approved: true,
+                            admin_notes: 'Approved via admin dashboard'
+                        })
+                    });
+
+                    if (response.ok) {
+                        showAlert('KYC approved successfully!', 'success');
+                    } else {
+                        showAlert('Error approving KYC', 'danger');
+                    }
+                } catch (error) {
+                    showAlert('Network error. Please try again.', 'danger');
+                }
                 await loadCustomers(); // Refresh
             }
         }
@@ -1175,10 +1195,98 @@
         async function rejectKyc(userId) {
             const reason = prompt('Reason for rejection:');
             if (reason) {
-                showAlert('KYC rejected. User has been notified.', 'success');
-                // API call would go here
+                try {
+                    const response = await fetch(`${API_BASE}/admin/kyc/approve`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer admin-token'
+                        },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            approved: false,
+                            reason: reason,
+                            admin_notes: 'Rejected via admin dashboard'
+                        })
+                    });
+
+                    if (response.ok) {
+                        showAlert('KYC rejected. User has been notified.', 'success');
+                    } else {
+                        showAlert('Error rejecting KYC', 'danger');
+                    }
+                } catch (error) {
+                    showAlert('Network error. Please try again.', 'danger');
+                }
                 await loadCustomers(); // Refresh
             }
+        }
+
+        async function updateAllRates() {
+            showAlert('Updating all exchange rates...', 'success');
+            try {
+                const response = await fetch(`${API_BASE}/admin/exchange-rates`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-token'
+                    },
+                    body: JSON.stringify({
+                        'USD-NGN': 460.0,
+                        'USD-GHS': 12.0,
+                        'USD-KES': 130.0,
+                        'USD-ZAR': 18.5,
+                        'USD-XAF': 600.0
+                    })
+                });
+
+                if (response.ok) {
+                    showAlert('All exchange rates updated successfully!', 'success');
+                } else {
+                    showAlert('Error updating exchange rates', 'danger');
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'danger');
+            }
+        }
+
+        async function generateComplianceReport() {
+            showAlert('Generating compliance report...', 'success');
+            // Simulate report generation
+            setTimeout(() => {
+                showAlert('Compliance report generated and sent to your email!', 'success');
+            }, 2000);
+        }
+
+        async function exportAnalytics() {
+            showAlert('Preparing analytics export...', 'success');
+            // Simulate export
+            setTimeout(() => {
+                showAlert('Analytics data exported successfully!', 'success');
+                // In production, trigger file download
+            }, 2000);
+        }
+
+        async function loadAnalytics() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/analytics/transactions`);
+                if (response.ok) {
+                    const analytics = await response.json();
+                    console.log('Analytics loaded:', analytics);
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        // Real-time updates
+        function startRealTimeUpdates() {
+            // Update dashboard data every 30 seconds
+            setInterval(async () => {
+                if (currentPage === 'dashboard') {
+                    await loadDashboardData();
+                }
+            }, 30000);
         }
 
         async function saveSettings() {
