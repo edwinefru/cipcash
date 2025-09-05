@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Suite for Mobile Money Remittance Application
-Tests authentication, admin settings, countries, exchange rates, and data validation
+Enhanced CipCash Backend API Testing Suite v3.0
+Tests FastAPI backend, Express backend with Socket.IO, and all new features
 """
 
 import requests
@@ -10,15 +10,18 @@ import time
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+import socketio
 
 # Load environment variables
 load_dotenv('/app/frontend/.env')
 
-# Get the backend URL from environment
+# Get the backend URLs from environment
 BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'http://localhost:8001')
 API_BASE_URL = f"{BACKEND_URL}/api"
+EXPRESS_BASE_URL = f"{BACKEND_URL}:8002/api"
 
-print(f"Testing backend API at: {API_BASE_URL}")
+print(f"Testing FastAPI backend at: {API_BASE_URL}")
+print(f"Testing Express backend at: {EXPRESS_BASE_URL}")
 
 class BackendTester:
     def __init__(self):
