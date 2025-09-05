@@ -288,9 +288,9 @@ async def initialize_default_data():
         await db.admin_settings.insert_one(admin_settings_data)
         logger.info("✅ Admin settings initialized")
 
-@api_router.get("/mobile-app")
-async def mobile_app():
-    """Serve working mobile app"""
+@api_router.get("/app")
+async def mobile_app_redirect():
+    """Serve working mobile app - use this URL instead of broken root"""
     return FileResponse("/app/mobile-app-working.html", media_type="text/html")
 
 # Authentication Routes
