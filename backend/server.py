@@ -538,6 +538,12 @@ async def admin_dashboard_slash():
     from fastapi.responses import FileResponse
     return FileResponse(ROOT_DIR / "static" / "admin.html")
 
+# Alternative admin route that won't conflict with frontend routing
+@api_router.get("/admin-dashboard")
+async def admin_dashboard_api():
+    from fastapi.responses import FileResponse
+    return FileResponse(ROOT_DIR / "static" / "admin.html")
+
 # Include the router in the main app
 app.include_router(api_router)
 
