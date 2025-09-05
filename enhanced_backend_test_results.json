@@ -3,17 +3,17 @@
     "health_check": {
       "success": true,
       "message": "API is healthy - Status: healthy",
-      "timestamp": "2025-09-05T02:33:28.161058",
+      "timestamp": "2025-09-05T02:34:25.883455",
       "data": {
         "status": "healthy",
         "service": "CipCash API",
-        "timestamp": "2025-09-05T02:33:28.158771"
+        "timestamp": "2025-09-05T02:34:25.879516"
       }
     },
     "auth_system": {
       "success": false,
-      "message": "Authentication system test failed",
-      "timestamp": "2025-09-05T02:33:28.414964",
+      "message": "Authentication system failed - Registration status: 500, Login attempts failed",
+      "timestamp": "2025-09-05T02:34:26.191425",
       "data": null
     }
   },
@@ -21,7 +21,7 @@
     "kyc_workflow": {
       "success": false,
       "message": "No auth token for KYC test",
-      "timestamp": "2025-09-05T02:33:28.415019",
+      "timestamp": "2025-09-05T02:34:26.191481",
       "data": null
     }
   },
@@ -29,7 +29,7 @@
     "chat_apis": {
       "success": false,
       "message": "No auth token for chat test",
-      "timestamp": "2025-09-05T02:33:28.415029",
+      "timestamp": "2025-09-05T02:34:26.191491",
       "data": null
     }
   },
@@ -37,7 +37,7 @@
     "analytics_apis": {
       "success": false,
       "message": "No auth token for analytics test",
-      "timestamp": "2025-09-05T02:33:28.415037",
+      "timestamp": "2025-09-05T02:34:26.191499",
       "data": null
     }
   },
@@ -45,7 +45,7 @@
     "countries_and_rates": {
       "success": true,
       "message": "Countries & Exchange Rates working - 24 countries, 4 exchange rates",
-      "timestamp": "2025-09-05T02:33:28.657768",
+      "timestamp": "2025-09-05T02:34:26.294938",
       "data": {
         "total_countries": 24,
         "working_rates": 4
@@ -56,7 +56,7 @@
     "enhanced_settings": {
       "success": true,
       "message": "Enhanced admin settings working - All payment providers supported",
-      "timestamp": "2025-09-05T02:33:28.765659",
+      "timestamp": "2025-09-05T02:34:26.358368",
       "data": null
     }
   },
@@ -64,7 +64,7 @@
     "compliance_reporting": {
       "success": false,
       "message": "No auth token for compliance test",
-      "timestamp": "2025-09-05T02:33:28.765715",
+      "timestamp": "2025-09-05T02:34:26.358427",
       "data": null
     }
   },
@@ -72,7 +72,7 @@
     "passed": 3,
     "failed": 5,
     "errors": [
-      "authentication.auth_system: Authentication system test failed",
+      "authentication.auth_system: Authentication system failed - Registration status: 500, Login attempts failed",
       "kyc_management.kyc_workflow: No auth token for KYC test",
       "chat_system.chat_apis: No auth token for chat test",
       "analytics.analytics_apis: No auth token for analytics test",
