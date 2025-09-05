@@ -283,6 +283,11 @@ async def initialize_default_data():
         await db.admin_settings.insert_one(admin_settings_data)
         logger.info("✅ Admin settings initialized")
 
+@app.get("/")
+async def root():
+    """Serve mobile app"""
+    return FileResponse("/app/mobile-app-working.html", media_type="text/html")
+
 # Authentication Routes
 @api_router.post("/auth/register", response_model=Token)
 async def register(user_data: UserCreate):
