@@ -73,12 +73,12 @@ class EnhancedBackendTester:
     
     def test_authentication_system(self):
         """Test Authentication System: User registration, login, JWT validation"""
-        # Test user registration
+        # Test user registration with string date format
         test_user = {
             "kyc_data": {
                 "first_name": "Alice",
                 "last_name": "Johnson", 
-                "date_of_birth": "1992-03-20",
+                "date_of_birth": "1992-03-20",  # String format
                 "nationality": "US",
                 "gender": "female",
                 "email": "alice.johnson@example.com",
@@ -90,6 +90,7 @@ class EnhancedBackendTester:
                 "country": "US",
                 "id_type": "drivers_license",
                 "id_number": "DL987654321",
+                "id_expiry_date": "2030-12-31",  # String format
                 "id_issuing_country": "US",
                 "occupation": "Marketing Manager",
                 "annual_income_range": "50k_100k",
@@ -123,8 +124,22 @@ class EnhancedBackendTester:
                                                   "Authentication system working: registration, login, JWT validation", 
                                                   {"user_email": user_data['kyc_data']['email']})
                                     return True
-                            
-            self.log_result('authentication', 'auth_system', False, "Authentication system test failed")
+            
+            # If we get here, check if it's a duplicate email error (which is expected)
+            if response.status_code == 400 and "already registered" in response.text:
+                # Try login with existing user
+                login_data = {"email": test_user["kyc_data"]["email"], "password": test_user["password"]}
+                response = self.session.post(f"{API_BASE_URL}/auth/login", json=login_data)
+                if response.status_code == 200:
+                    login_result = response.json()
+                    if 'access_token' in login_result:
+                        self.auth_token = login_result['access_token']
+                        self.log_result('authentication', 'auth_system', True, 
+                                      "Authentication system working: login with existing user", 
+                                      {"user_email": test_user["kyc_data"]["email"]})
+                        return True
+                        
+            self.log_result('authentication', 'auth_system', False, f"Authentication system test failed - Status: {response.status_code}")
             return False
         except Exception as e:
             self.log_result('authentication', 'auth_system', False, f"Authentication system error: {str(e)}")
