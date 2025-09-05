@@ -939,14 +939,19 @@ class BackendTester:
             return False
     
     def run_all_tests(self):
-        """Run all enhanced v2.0 backend tests"""
-        print("🚀 Starting Mobile Money Remittance Backend API v2.0 Enhanced Tests")
-        print("=" * 70)
+        """Run all enhanced v3.0 backend tests including Express backend"""
+        print("🚀 Starting CipCash Enhanced Backend API v3.0 Tests")
+        print("Testing both FastAPI (port 8001) and Express (port 8002) backends")
+        print("=" * 80)
         
         # Test basic connectivity first
         if not self.test_health_check():
-            print("❌ Health check failed - API may not be running")
+            print("❌ FastAPI health check failed - API may not be running")
             return self.test_results
+        
+        # Test Express backend connectivity
+        if not self.test_express_backend_health():
+            print("⚠️ Express backend health check failed - Real-time features may not be available")
         
         # Enhanced Authentication & KYC System tests
         print("\n🔐 Testing Enhanced Authentication & KYC System...")
@@ -956,6 +961,20 @@ class BackendTester:
         self.test_jwt_token_validation()
         self.test_protected_endpoint_without_token()
         self.test_profile_picture_upload()
+        
+        # KYC Management System tests
+        print("\n📋 Testing KYC Management System...")
+        self.test_kyc_management_system()
+        
+        # Chat System APIs tests
+        print("\n💬 Testing Chat System APIs...")
+        self.test_chat_system_apis()
+        self.test_express_chat_integration()
+        
+        # Analytics APIs tests
+        print("\n📊 Testing Analytics APIs...")
+        self.test_analytics_apis()
+        self.test_express_analytics_integration()
         
         # Enhanced Admin Settings tests
         print("\n⚙️ Testing Enhanced Admin Settings (All Payment Providers)...")
@@ -972,9 +991,15 @@ class BackendTester:
         self.test_get_all_exchange_rates()
         self.test_enhanced_exchange_rates()
         
-        # Transfer Reasons & Compliance tests
-        print("\n📋 Testing Transfer Reasons & Compliance...")
+        # Real-time Features tests
+        print("\n⚡ Testing Real-time Features (Express Backend)...")
+        self.test_express_realtime_features()
+        
+        # Compliance & Reporting tests
+        print("\n📋 Testing Compliance & Reporting...")
         self.test_transfer_reasons()
+        self.test_compliance_reporting()
+        self.test_express_compliance_metrics()
         
         # Payment Methods tests
         print("\n💳 Testing Payment Methods CRUD...")
@@ -985,9 +1010,9 @@ class BackendTester:
         self.test_user_transactions()
         
         # Print summary
-        print("\n" + "=" * 70)
-        print("📋 ENHANCED v2.0 TEST SUMMARY")
-        print("=" * 70)
+        print("\n" + "=" * 80)
+        print("📋 ENHANCED v3.0 TEST SUMMARY")
+        print("=" * 80)
         print(f"✅ Passed: {self.test_results['summary']['passed']}")
         print(f"❌ Failed: {self.test_results['summary']['failed']}")
         
@@ -996,7 +1021,10 @@ class BackendTester:
             for error in self.test_results['summary']['errors']:
                 print(f"   • {error}")
         else:
-            print("\n🎉 All enhanced v2.0 features are working correctly!")
+            print("\n🎉 All enhanced v3.0 features are working correctly!")
+            print("✅ FastAPI Backend (port 8001): Fully functional")
+            print("✅ Express Backend (port 8002): Real-time features operational")
+            print("✅ Socket.IO Integration: Ready for real-time communication")
         
         return self.test_results
 
